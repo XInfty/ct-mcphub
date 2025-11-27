@@ -1,0 +1,23 @@
+## 1. Implementation
+- [ ] 1.1 **Analyze A2A Streaming and Push Notification Specifications**:
+    - [ ] 1.1.1 Review A2A Protocol Specification for streaming RPC methods (e.g., `tasks/stream`) and push notification mechanisms (`tasks/pushNotificationConfig`).
+    - [ ] 1.1.2 Understand how `TaskState` transitions can trigger events for streaming/push.
+    - [ ] 1.1.3 Identify requirements for client subscription and server-sent events.
+- [ ] 1.2 **Implement A2A Streaming for Task Updates**:
+    - [ ] 1.2.1 Extend `tasks/get` or create a new `tasks/stream` RPC method to support long-lived connections for continuous task state updates.
+    - [ ] 1.2.2 Implement server-sent event (SSE) or WebSocket technology to deliver real-time updates of task progress and status changes.
+    - [ ] 1.2.3 Ensure that streamed updates adhere to A2A `Task` object format and include `Cap-Logik` and `AuditChain` information.
+- [ ] 1.3 **Implement A2A Push Notification Configuration**:
+    - [ ] 1.3.1 Implement the `tasks/pushNotificationConfig` RPC method to allow clients to register for push notifications for specific tasks or events.
+    - [ ] 1.3.2 Design and implement a notification service that queues and dispatches A2A `Message` objects (or similar) to registered clients when relevant events occur (e.g., task completion, error).
+    - [ ] 1.3.3 Ensure push notifications are secure and respect client preferences.
+- [ ] 1.4 **Integrate with Internal Event System**:
+    - [ ] 1.4.1 Adapt internal task lifecycle management to emit events that can be captured by the streaming and push notification systems.
+    - [ ] 1.4.2 Ensure that internal `Rückkopplungspflicht` mechanisms can leverage A2A streaming/push for real-time feedback.
+- [ ] 1.5 **Validation & Testing**:
+    - [ ] 1.5.1 Develop unit tests for streaming and push notification components.
+    - [ ] 1.5.2 Implement integration tests to verify real-time delivery of task updates and notifications to subscribed clients.
+    - [ ] 1.5.3 Test client subscription, unsubscription, and event handling.
+- [ ] 1.6 **Documentation Update**:
+    - [ ] 1.6.1 Document the new A2A streaming endpoints and push notification configuration API.
+    - [ ] 1.6.2 Provide examples for clients to subscribe to and consume streamed/pushed events.

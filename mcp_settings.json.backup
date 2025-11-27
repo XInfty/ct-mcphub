@@ -1,0 +1,216 @@
+{
+  "mcpServers": {
+    "testsprite": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@testsprite/testsprite-mcp@latest"
+      ],
+      "env": {
+        "API_KEY": "sk-user-0N2eE4zvS8baZ7pHXkPUk1Vxp9vRAY3hfsPOeQ-UXNh-OAeJKSVraJzyOkVcMrIRH5qz8dfrTjP0omoQH0RVkZqF8hmOnpRfIOfjbhIPRzygcwW7yIGKr0mbDFdSefQqIzU"
+      }
+    },
+    "infisical": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@infisical/mcp@latest"
+      ],
+      "env": {
+        "INFISICAL_HOST_URL": "https://eu.infisical.com",
+        "INFISICAL_UNIVERSAL_AUTH_CLIENT_ID": "1a770e93-9474-48f1-b790-f0ee736cfbf5",
+        "INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET": "1123d58ea91c5b92083c7104ec2145227898246d89aba7448318cc2cefdb4ab2"
+      }
+    },
+    "firecrawl": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "command": "firecrawl-mcp",
+      "args": [],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-083923e1ab1e495cbad6901941297722"
+      },
+      "url": "https://mcp.firecrawl.dev/{FIRECRAWL_API_KEY}/v2/mcp",
+      "headers": {
+        "FIRECRAWL_API_KEY": "fc-083923e1ab1e495cbad6901941297722"
+      }
+    },
+    "docfork": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx ",
+      "args": [
+        "-y",
+        "docfork"
+      ]
+    },
+    "context7-mcp": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "url": "https://mcprouter.to/context7",
+      "headers": {
+        "Authorization": "Bearer sk-13XoJlib69fGe7GoMpkIlRgZkjBVF7yeDalCke4qOvXAX",
+        "HTTP-Referer": "https://www.mcphubx.com",
+        "X-Title": "MCPHub"
+      }
+    },
+    "hf-mcp": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "url": "https://mcprouter.to/hf-mcp",
+      "headers": {
+        "Authorization": "Bearer sk-13XoJlib69fGe7GoMpkIlRgZkjBVF7yeDalCke4qOvXAX",
+        "HTTP-Referer": "https://www.mcphubx.com",
+        "X-Title": "MCPHub"
+      }
+    },
+    "time": {
+      "enabled": true,
+      "owner": "admin",
+      "command": "uvx",
+      "args": [
+        "mcp-server-time",
+        "--local-timezone=UTC"
+      ],
+      "env": {}
+    },
+    "scholarly": {
+      "enabled": true,
+      "owner": "admin",
+      "command": "uvx",
+      "args": [
+        "mcp-scholarly"
+      ],
+      "env": {},
+      "type": "stdio"
+    },
+    "eslint": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@eslint/mcp@latest"
+      ]
+    }
+  },
+  "users": [
+    {
+      "username": "admin",
+      "password": "$2b$10$Vt7krIvjNgyN67LXqly0uOcTpN0LI55cYRbcKC71pUDAP0nJ7RPa.",
+      "isAdmin": true
+    }
+  ],
+  "systemConfig": {
+    "routing": {
+      "enableGlobalRoute": true,
+      "enableGroupNameRoute": true,
+      "enableBearerAuth": false,
+      "bearerAuthKey": "",
+      "skipAuth": true
+    },
+    "install": {
+      "pythonIndexUrl": "",
+      "npmRegistry": "",
+      "baseUrl": "http://xinfty-srv.sphinx-alnitak.ts.net:13131"
+    },
+    "smartRouting": {
+      "enabled": true,
+      "dbUrl": "postgresql://neondb_owner:npg_TojVtG5Ky9BL@ep-damp-sea-ab76zkbp-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+      "openaiApiBaseUrl": "https://openrouter.ai/v1/",
+      "openaiApiKey": "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",
+      "openaiApiEmbeddingModel": "qwen/qwen3-embedding-8b"
+    },
+    "mcpRouter": {
+      "apiKey": "sk-13XoJlib69fGe7GoMpkIlRgZkjBVF7yeDalCke4qOvXAX",
+      "referer": "https://www.mcphubx.com",
+      "title": "MCPHub",
+      "baseUrl": "https://api.mcprouter.to/v1"
+    }
+  },
+  "groups": [
+    {
+      "id": "a7b8abd9-49f5-4b33-bd9c-138846b143b2",
+      "name": "ct_dev-PMO",
+      "description": "",
+      "servers": [
+        {
+          "name": "scholarly",
+          "tools": "all"
+        },
+        {
+          "name": "time",
+          "tools": "all"
+        },
+        {
+          "name": "hf-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "context7-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "docfork",
+          "tools": "all"
+        },
+        {
+          "name": "firecrawl",
+          "tools": "all"
+        },
+        {
+          "name": "logfire_ct-cipher",
+          "tools": "all"
+        },
+        {
+          "name": "infisical",
+          "tools": "all"
+        },
+        {
+          "name": "github",
+          "tools": "all"
+        },
+        {
+          "name": "serena",
+          "tools": "all"
+        },
+        {
+          "name": "ct_dev-task_orchestrator",
+          "tools": "all"
+        },
+        {
+          "name": "code-graph",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    },
+    {
+      "id": "5e5d6ff8-1f17-4d82-a88f-bf50c8c2ec65",
+      "name": "claude-ct_dev-coding",
+      "description": "",
+      "servers": [
+        {
+          "name": "claude-serena",
+          "tools": "all"
+        },
+        {
+          "name": "Ptah",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    }
+  ]
+}

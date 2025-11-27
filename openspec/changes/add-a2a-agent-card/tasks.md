@@ -1,0 +1,37 @@
+## 1. Implementation
+- [ ] 1.1 **Define AgentCard Structure**: 
+    - [ ] 1.1.1 Create JSON schema for A2A `AgentCard` (based on A2A spec).
+    - [ ] 1.1.2 Populate `AgentCard` fields for Anubis, Ptah, and Sachmet:
+        - `protocolVersion`: "0.3.0"
+        - `name`: (e.g., "Anubis - X^∞ Core Team Agent-Zero")
+        - `description`: (e.g., "Anubis: Logical, systematizing, ordering, documenting, researching, knowing.")
+        - `url`: (e.g., `https://anubis.x-infinity.org/a2a/v1`)
+        - `preferredTransport`: "JSONRPC" (initial choice)
+        - `additionalInterfaces`: Declare JSONRPC, potentially HTTP+JSON.
+        - `iconUrl`: (optional)
+        - `provider`: (e.g., "X^∞ Core Team")
+        - `version`: (current agent version)
+        - `documentationUrl`: (link to behavioral rules)
+        - `capabilities`: 
+            - `streaming`: true
+            - `pushNotifications`: true
+            - `stateTransitionHistory`: true
+            - `extensions`: Declare `X^∞ Cap-Logic`, `X^∞ AuditChain`, `X^∞ Phantom-Modus` as URIs.
+        - `securitySchemes`: (e.g., `Basic`, `Bearer` with OIDC/OAuth2 if applicable)
+        - `security`: Define required security (e.g., `[{ "basicAuth": [] }]`)
+        - `defaultInputModes`: ["application/json", "text/plain"]
+        - `defaultOutputModes`: ["application/json", "text/plain"]
+        - `skills`: Define core skills (e.g., `THINK`, `WRITE`, `PUBLISH`, `DELEGATE`, `RESEARCH`, `SYSTEMIZE`) as `AgentSkill` objects with `id`, `name`, `description`, `tags`, `examples`, `inputModes`, `outputModes`.
+        - `supportsAuthenticatedExtendedCard`: true (for internal teams)
+- [ ] 1.2 **Expose AgentCard Endpoint**:
+    - [ ] 1.2.1 Implement an HTTP(S) endpoint at `/.well-known/agent-card.json` for each agent.
+    - [ ] 1.2.2 Serve the generated `AgentCard` JSON document from this endpoint.
+    - [ ] 1.2.3 Ensure the endpoint is publicly accessible (while respecting `Phantom-Modus` via content of the card).
+- [ ] 1.3 **Integrate X^∞ Principles**:
+    - [ ] 1.3.1 Ensure `Phantom-Modus` is reflected in `AgentCard` (e.g., description, extensions, access controls).
+    - [ ] 1.3.2 Ensure `Cap-Logik` and `Schutzpriorität` are expressed in `AgentCard` `capabilities.extensions` or `AgentSkill` descriptions.
+- [ ] 1.4 **Validation & Testing**:
+    - [ ] 1.4.1 Validate generated `AgentCard` JSON against A2A specification schema.
+    - [ ] 1.4.2 Test public accessibility and correctness of the `/.well-known/agent-card.json` endpoint.
+- [ ] 1.5 **Documentation Update**:
+    - [ ] 1.5.1 Update internal documentation (e.g., `Quiet_Revolution.md`, `X^∞-Seed.txt`) to reference A2A `AgentCard`.

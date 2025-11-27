@@ -1,0 +1,317 @@
+# Phantom Security Configuration for LiteLLM Proxy
+# Implements invisible security measures: encryption, access controls, monitoring, data hygiene
+# This configuration ensures security operates transparently without disrupting normal LLM operations
+
+# =============================================================================
+# ENCRYPTION SETTINGS
+# =============================================================================
+encryption:
+  # Transport Layer Security (Data in Transit)
+  tls:
+    enabled: true
+    protocol: "TLSv1.3"
+    cipher_suites:
+      - "ECDHE-RSA-AES256-GCM-SHA384"
+      - "ECDHE-RSA-CHACHA20-POLY1305"
+    certificate:
+      cert_file: "/etc/ssl/certs/litellm.crt"
+      key_file: "/etc/ssl/private/litellm.key"
+      ca_file: "/etc/ssl/certs/ca.crt"
+    hsts:
+      enabled: true
+      max_age: 31536000  # 1 year
+      include_subdomains: true
+      preload: false
+
+  # Data at Rest Encryption
+  data_at_rest:
+    enabled: true
+    method: "AES-256-GCM"
+    key_rotation:
+      enabled: true
+      interval_days: 90
+      auto_rotate: true
+    database_encryption:
+      enabled: true
+      tables:
+        - "user_sessions"
+        - "api_keys"
+        - "usage_logs"
+        - "cached_responses"
+    file_encryption:
+      enabled: true
+      paths:
+        - "/var/lib/litellm/cache"
+        - "/var/log/litellm"
+
+  # API Key Encryption
+  api_keys:
+    encryption_enabled: true
+    method: "AES-256-CBC"
+    key_derivation: "PBKDF2"
+    salt_length: 32
+    iterations: 100000
+
+  # Request/Response Encryption (for sensitive data)
+  payload_encryption:
+    enabled: false  # Only enable for highly sensitive deployments
+    method: "ChaCha20-Poly1305"
+    key_exchange: "X25519"
+
+# =============================================================================
+# ACCESS CONTROLS
+# =============================================================================
+access_controls:
+  # Authentication Methods
+  authentication:
+    primary_method: "jwt"
+    fallback_methods:
+      - "api_key"
+      - "oauth2"
+    jwt:
+      algorithm: "RS256"
+      issuer: "litellm-proxy"
+      audience: "litellm-clients"
+      key_rotation_hours: 24
+      blacklist_enabled: true
+    api_key:
+      header_name: "Authorization"
+      prefix: "Bearer"
+      rotation_required: true
+      rotation_interval_days: 30
+    oauth2:
+      providers:
+        - "google"
+        - "github"
+        - "azure_ad"
+      client_id: "os.environ/OAUTH_CLIENT_ID"
+      client_secret: "os.environ/OAUTH_CLIENT_SECRET"
+
+  # Authorization (Role-Based Access Control)
+  authorization:
+    enabled: true
+    roles:
+      admin:
+        permissions:
+          - "read:all"
+          - "write:all"
+          - "delete:all"
+          - "admin:manage_users"
+      user:
+        permissions:
+          - "read:own"
+          - "write:own"
+          - "llm:invoke"
+      readonly:
+        permissions:
+          - "read:all"
+    default_role: "user"
+    resource_protection:
+      models: ["admin", "user"]
+      admin_ui: ["admin"]
+      api_keys: ["admin"]
+
+  # Rate Limiting
+  rate_limiting:
+    enabled: true
+    backend: "redis"
+    global_limits:
+      requests_per_minute: 1000
+      requests_per_hour: 10000
+    user_limits:
+      requests_per_minute: 100
+      requests_per_hour: 1000
+      burst_limit: 50
+    model_limits:
+      gpt4_requests_per_minute: 50
+      claude_requests_per_minute: 100
+    ip_whitelist:
+      - "127.0.0.1"
+      - "10.0.0.0/8"
+    ip_blacklist: []  # Add suspicious IPs here
+
+  # IP-based Controls
+  ip_controls:
+    geo_blocking:
+      enabled: false
+      allowed_countries: ["US", "CA", "GB", "DE"]
+    vpn_detection:
+      enabled: true
+      action: "log"  # log, block, or challenge
+
+# =============================================================================
+# MONITORING
+# =============================================================================
+monitoring:
+  # Logging Configuration
+  logging:
+    level: "INFO"
+    format: "json"
+    destinations:
+      - type: "file"
+        path: "/var/log/litellm/security.log"
+        max_size_mb: 100
+        backup_count: 5
+      - type: "syslog"
+        facility: "local0"
+    sensitive_data_masking:
+      enabled: true
+      fields:
+        - "api_key"
+        - "password"
+        - "token"
+        - "secret"
+    audit_trail:
+      enabled: true
+      events:
+        - "authentication"
+        - "authorization"
+        - "api_calls"
+        - "config_changes"
+        - "security_events"
+
+  # Metrics Collection
+  metrics:
+    enabled: true
+    backend: "prometheus"
+    endpoint: "/metrics"
+    collect:
+      - "request_count"
+      - "response_time"
+      - "error_rate"
+      - "token_usage"
+      - "cost_tracking"
+      - "security_events"
+    labels:
+      - "model"
+      - "user"
+      - "endpoint"
+
+  # Alerting
+  alerting:
+    enabled: true
+    backend: "webhook"
+    webhooks:
+      - url: "https://alerts.example.com/webhook"
+        events:
+          - "high_error_rate"
+          - "unauthorized_access"
+          - "rate_limit_exceeded"
+    thresholds:
+      error_rate_percent: 5
+      unauthorized_attempts_per_minute: 10
+      suspicious_activity_score: 0.8
+
+  # Intrusion Detection
+  intrusion_detection:
+    enabled: true
+    rules:
+      - name: "brute_force"
+        pattern: "failed_auth > 5 in 1min"
+        action: "block_ip"
+      - name: "suspicious_payload"
+        pattern: "payload_size > 10MB"
+        action: "log_and_alert"
+      - name: "api_abuse"
+        pattern: "requests_per_second > 100"
+        action: "rate_limit"
+
+# =============================================================================
+# DATA HYGIENE
+# =============================================================================
+data_hygiene:
+  # Data Retention Policies
+  retention:
+    user_sessions_days: 30
+    api_logs_days: 90
+    usage_metrics_days: 365
+    cached_responses_hours: 24
+    audit_logs_years: 7
+    auto_cleanup:
+      enabled: true
+      schedule: "0 2 * * *"  # Daily at 2 AM
+
+  # Data Sanitization
+  sanitization:
+    input_validation:
+      enabled: true
+      rules:
+        - type: "sql_injection"
+          action: "sanitize"
+        - type: "xss"
+          action: "escape"
+        - type: "prompt_injection"
+          action: "detect_and_block"
+    output_filtering:
+      enabled: true
+      remove_pii: true
+      pii_patterns:
+        - "\\b\\d{3}-\\d{2}-\\d{4}\\b"  # SSN
+        - "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"  # Email
+    data_masking:
+      enabled: true
+      mask_patterns:
+        api_keys: "****-****-****-****"
+        tokens: "tok_****"
+
+  # Compliance Settings
+  compliance:
+    gdpr:
+      enabled: true
+      data_processing_agreement: true
+      consent_management: true
+      right_to_erasure: true
+    hipaa:
+      enabled: false  # Enable if handling medical data
+    soc2:
+      enabled: true
+      audit_logging: true
+      access_controls: true
+
+  # Data Backup and Recovery
+  backup:
+    enabled: true
+    method: "encrypted"
+    schedule: "0 3 * * *"  # Daily at 3 AM
+    retention_days: 30
+    offsite_replication: true
+    test_restoration: true
+
+# =============================================================================
+# PHANTOM SECURITY FEATURES
+# =============================================================================
+phantom_features:
+  # Invisible Security Operations
+  stealth_mode:
+    enabled: true
+    hide_security_headers: false  # Set to true to hide security indicators
+    silent_failures: true  # Don't expose security errors to clients
+
+  # Automated Security Responses
+  auto_response:
+    quarantine_suspicious: true
+    auto_block_malicious: true
+    self_healing: true
+
+  # Zero-Trust Architecture
+  zero_trust:
+    enabled: true
+    continuous_verification: true
+    micro_segmentation: true
+
+  # AI-Powered Security
+  ai_security:
+    enabled: true
+    anomaly_detection: true
+    threat_intelligence: true
+    adaptive_defenses: true
+
+# =============================================================================
+# ENVIRONMENT VARIABLES
+# =============================================================================
+# Required environment variables for security configuration
+# LITELLM_SECURITY_KEY=your_encryption_key_here
+# OAUTH_CLIENT_ID=your_oauth_client_id
+# OAUTH_CLIENT_SECRET=your_oauth_client_secret
+# ALERT_WEBHOOK_URL=https://alerts.example.com/webhook
+# ENCRYPTION_KEY_ROTATION_SECRET=your_key_rotation_secret

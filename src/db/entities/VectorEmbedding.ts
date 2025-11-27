@@ -11,10 +11,10 @@ export class VectorEmbedding {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', default: 'unknown' })
   content_type: string; // 'market_server', 'tool', 'documentation', etc.
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', default: '' })
   content_id: string; // Reference ID to the original content
 
   @Column('text')
@@ -24,11 +24,10 @@ export class VectorEmbedding {
   metadata: Record<string, any>; // Additional metadata about the embedding
 
   @Column({
-    type: 'float',
-    array: true,
+    type: 'varchar',
     nullable: true,
   })
-  embedding: number[]; // The vector embedding - will be converted to vector type after table creation
+  embedding: string | number[]; // The vector embedding - stored as pgvector format string
 
   @Column({ type: 'int' })
   dimensions: number; // Dimensionality of the embedding vector

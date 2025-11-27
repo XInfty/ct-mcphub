@@ -1,0 +1,28 @@
+## 1. Implementation
+- [ ] 1.1 **Integrate A2A `AgentCard` Discovery**:
+    - [ ] 1.1.1 Implement logic within `a2a_chat` to discover and retrieve `AgentCard`s from A2A agents via their `/.well-known/agent-card.json` endpoint.
+    - [ ] 1.1.2 Parse and cache `AgentCard` information (e.g., agent capabilities, supported RPC methods, security schemes).
+    - [ ] 1.1.3 Update `a2a_chat`'s internal agent registry with discovered A2A agent metadata.
+- [ ] 1.2 **A2A Data Object Handling**:
+    - [ ] 1.2.1 Adapt `a2a_chat` to construct and send A2A-compliant `Message` objects for `message/send` RPC calls.
+    - [ ] 1.2.2 Implement deserialization logic to interpret incoming A2A `Message` and `Task` objects.
+    - [ ] 1.2.3 Ensure X^∞-specific `metadata` within A2A objects is correctly parsed and presented to internal agents.
+- [ ] 1.3 **A2A RPC Client Logic**:
+    - [ ] 1.3.1 Implement a generic A2A RPC client within `a2a_chat` capable of making `JSONRPC` calls.
+    - [ ] 1.3.2 Integrate client-side logic for `message/send`, `tasks/get`, and `tasks/cancel` RPC methods.
+    - [ ] 1.3.3 Handle A2A `JSONRPCError` responses gracefully, providing informative feedback to the user.
+- [ ] 1.4 **A2A Streaming and Push Notification Consumption**:
+    - [ ] 1.4.1 Implement client-side logic within `a2a_chat` to subscribe to and consume A2A streaming responses (e.g., from `tasks/stream`).
+    - [ ] 1.4.2 Develop mechanisms to receive and process A2A push notifications (e.g., webhooks) for task updates or events.
+    - [ ] 1.4.3 Present real-time updates and notifications to the user in an understandable format.
+- [ ] 1.5 **Security and Authentication**:
+    - [ ] 1.5.1 Implement client-side support for A2A `securitySchemes` (e.g., `Basic`, `Bearer` token authentication) based on `AgentCard` declarations.
+    - [ ] 1.5.2 Ensure secure communication over HTTPS (once `enforce-a2a-https` is implemented).
+- [ ] 1.6 **User Interface / User Experience (UI/UX) Enhancements**:
+    - [ ] 1.6.1 Update `a2a_chat`'s UI to display A2A agent capabilities and status.
+    - [ ] 1.6.2 Provide clear feedback on A2A RPC call status, errors, and incoming streams/notifications.
+- [ ] 1.7 **Validation & Testing**:
+    - [ ] 1.7.1 Develop comprehensive unit and integration tests for all new A2A client functionalities.
+    - [ ] 1.7.2 Test `a2a_chat`'s ability to interoperate with various A2A-compliant agents (internal and external test agents).
+- [ ] 1.8 **Documentation Update**:
+    - [ ] 1.8.1 Update `a2a_chat` user and developer documentation to reflect new A2A capabilities and usage patterns.

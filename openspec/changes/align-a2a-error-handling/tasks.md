@@ -1,0 +1,19 @@
+## 1. Implementation
+- [ ] 1.1 **Analyze A2A `JSONRPCError` Specification**:
+    - [ ] 1.1.1 Review A2A Protocol Specification for the `JSONRPCError` structure (`code`, `message`, `data`).
+    - [ ] 1.1.2 Understand standard error codes and their semantic meanings (e.g., parse error, invalid request, method not found).
+- [ ] 1.2 **Map Internal Error Codes to A2A `JSONRPCError`**:
+    - [ ] 1.2.1 Identify common internal error types and their existing codes/messages.
+    - [ ] 1.2.2 Define a mapping from internal errors to appropriate A2A `JSONRPCError` `code` and `message` values.
+    - [ ] 1.2.3 Determine what internal context should be included in the `data` field of the `JSONRPCError` (e.g., original error message, stack trace, specific X^∞ audit IDs, but avoid sensitive information).
+- [ ] 1.3 **Implement Error Conversion Logic**:
+    - [ ] 1.3.1 Create a centralized error handler or a utility function that takes an internal exception/error and converts it into an A2A `JSONRPCError` object.
+    - [ ] 1.3.2 Integrate this conversion logic into all existing A2A RPC endpoints (e.g., `message/send`, `tasks/get`, `tasks/cancel`).
+    - [ ] 1.3.3 Ensure that `Cap-Logik` and `AuditChain` information related to the error context is captured and, if appropriate, included in the `data` field of the `JSONRPCError`.
+- [ ] 1.4 **Validation & Testing**:
+    - [ ] 1.4.1 Develop unit tests for the error conversion utility.
+    - [ ] 1.4.2 Implement integration tests to verify that A2A RPC endpoints return correctly formatted `JSONRPCError` responses for various failure scenarios (e.g., invalid input, internal server error, unauthorized access).
+    - [ ] 1.4.3 Test client-side parsing of these A2A `JSONRPCError` responses.
+- [ ] 1.5 **Documentation Update**:
+    - [ ] 1.5.1 Update internal developer documentation with the new A2A error mapping and handling procedures.
+    - [ ] 1.5.2 Document common A2A `JSONRPCError` codes and their corresponding internal meanings.

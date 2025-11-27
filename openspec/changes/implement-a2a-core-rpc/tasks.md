@@ -1,0 +1,29 @@
+## 1. Implementation
+- [ ] 1.1 **Analyze A2A RPC Method Specifications**:
+    - [ ] 1.1.1 Review A2A Protocol Specification for `message/send`, `tasks/get`, and `tasks/cancel` RPC methods.
+    - [ ] 1.1.2 Understand request and response schemas, including error handling.
+- [ ] 1.2 **Implement `message/send` RPC Method**:
+    - [ ] 1.2.1 Create a new API endpoint (e.g., `/a2a/v1/message.send`) that accepts A2A `message/send` requests.
+    - [ ] 1.2.2 Implement logic to parse the incoming A2A `Message` object (using the formalized data objects from `formalize-a2a-data-objects`).
+    - [ ] 1.2.3 Route the message to the appropriate internal message processing system.
+    - [ ] 1.2.4 Ensure `Cap-Logik` and `AuditChain` data from the A2A `Message` is logged and processed.
+    - [ ] 1.2.5 Return an A2A-compliant response (e.g., `result: true` or appropriate error).
+- [ ] 1.3 **Implement `tasks/get` RPC Method**:
+    - [ ] 1.3.1 Create a new API endpoint (e.g., `/a2a/v1/tasks.get`) that accepts A2A `tasks/get` requests with a `taskId`.
+    - [ ] 1.3.2 Implement logic to retrieve the internal task state corresponding to the `taskId`.
+    - [ ] 1.3.3 Convert the internal task state to an A2A `Task` object (using formalized data objects).
+    - [ ] 1.3.4 Return the A2A `Task` object or an appropriate `JSONRPCError` if not found.
+- [ ] 1.4 **Implement `tasks/cancel` RPC Method**:
+    - [ ] 1.4.1 Create a new API endpoint (e.g., `/a2a/v1/tasks.cancel`) that accepts A2A `tasks/cancel` requests with a `taskId`.
+    - [ ] 1.4.2 Implement logic to initiate the cancellation process for the specified internal task.
+    - [ ] 1.4.3 Ensure proper state transitions and logging for cancellation.
+    - [ ] 1.4.4 Return an A2A-compliant response indicating success or failure of cancellation.
+- [ ] 1.5 **Integration with Security Mechanisms**:
+    - [ ] 1.5.1 Ensure all new RPC endpoints are protected by appropriate authentication and authorization (e.g., using A2A `securitySchemes` from `add-a2a-agent-card`).
+- [ ] 1.6 **Validation & Testing**:
+    - [ ] 1.6.1 Develop unit tests for each RPC method implementation.
+    - [ ] 1.6.2 Implement integration tests to verify successful communication and task management via these A2A RPC endpoints.
+    - [ ] 1.6.3 Use A2A SDK (if available) or custom clients to test compatibility with the implemented RPC methods.
+- [ ] 1.7 **Documentation Update**:
+    - [ ] 1.7.1 Document the new A2A RPC endpoints, their request/response schemas, and error codes.
+    - [ ] 1.7.2 Update internal developer guides on how to interact with agents via A2A RPC.

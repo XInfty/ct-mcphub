@@ -7,12 +7,14 @@ import {
   createServer,
   updateServer,
   deleteServer,
+  copyServerEndpoint,
   toggleServer,
   toggleTool,
   updateToolDescription,
   togglePrompt,
   updatePromptDescription,
   updateSystemConfig,
+  forceRefreshTools,
 } from '../controllers/serverController.js';
 import {
   getGroups,
@@ -56,10 +58,21 @@ import {
   getCloudServerToolsList,
   callCloudTool,
 } from '../controllers/cloudController.js';
+import {
+  getAllRegistryServers,
+  getRegistryServerVersions,
+  getRegistryServerVersion,
+} from '../controllers/registryController.js';
 import { login, register, getCurrentUser, changePassword } from '../controllers/authController.js';
 import { getAllLogs, clearLogs, streamLogs } from '../controllers/logController.js';
-import { getRuntimeConfig, getPublicConfig } from '../controllers/configController.js';
+import {
+  getRuntimeConfig,
+  getPublicConfig,
+  getMcpSettingsJson,
+} from '../controllers/configController.js';
 import { callTool } from '../controllers/toolController.js';
+import { listTools } from '../controllers/toolController.js';
+import { callToolMCP } from '../controllers/toolController.js';
 import { getPrompt } from '../controllers/promptController.js';
 import { uploadDxtFile, uploadMiddleware } from '../controllers/dxtController.js';
 import { healthCheck } from '../controllers/healthController.js';
@@ -70,6 +83,29 @@ import {
   executeToolViaOpenAPI,
   getGroupOpenAPISpec,
 } from '../controllers/openApiController.js';
+import { handleOAuthCallback } from '../controllers/oauthCallbackController.js';
+import {
+  getAuthorize,
+  postAuthorize,
+  postToken,
+  getUserInfo,
+  getMetadata,
+  getProtectedResourceMetadata,
+} from '../controllers/oauthServerController.js';
+import {
+  getAllClients,
+  getClient,
+  createClient,
+  updateClient,
+  deleteClient,
+  regenerateSecret,
+} from '../controllers/oauthClientController.js';
+import {
+  registerClient,
+  getClientConfiguration,
+  updateClientConfiguration,
+  deleteClientRegistration,
+} from '../controllers/oauthDynamicRegistrationController.js';
 import { auth } from '../middlewares/auth.js';
 
 const router = express.Router();
@@ -77,6 +113,25 @@ const router = express.Router();
 export const initRoutes = (app: express.Application): void => {
   // Health check endpoint (no auth required, accessible at /health)
   app.get('/health', healthCheck);
+  app.get('/tools/list', listTools);
+app.post('/tools/call', callToolMCP);
+
+  // OAuth callback endpoint (no auth required, public callback URL)
+  app.get('/oauth/callback', handleOAuthCallback);
+
+  // OAuth Authorization Server endpoints (no auth required for OAuth flow)
+  app.get('/oauth/authorize', getAuthorize);
+  app.post('/oauth/authorize', express.urlencoded({ extended: true }), postAuthorize);
+  app.post('/oauth/token', express.urlencoded({ extended: true }), postToken); // Public endpoint for token exchange
+  app.get('/oauth/userinfo', getUserInfo); // Validates OAuth token
+  app.get('/.well-known/oauth-authorization-server', getMetadata); // Public metadata endpoint
+  app.get('/.well-known/oauth-protected-resource', getProtectedResourceMetadata); // Public protected resource metadata
+
+  // RFC 7591 Dynamic Client Registration endpoints (public for registration)
+  app.post('/oauth/register', registerClient); // Register new OAuth client
+  app.get('/oauth/register/:clientId', getClientConfiguration); // Read client configuration
+  app.put('/oauth/register/:clientId', updateClientConfiguration); // Update client configuration
+  app.delete('/oauth/register/:clientId', deleteClientRegistration); // Delete client registration
 
   // API routes protected by auth middleware in middlewares/index.ts
   router.get('/servers', getAllServers);
@@ -84,12 +139,14 @@ export const initRoutes = (app: express.Application): void => {
   router.post('/servers', createServer);
   router.put('/servers/:name', updateServer);
   router.delete('/servers/:name', deleteServer);
+  router.post('/servers/:name/copy', copyServerEndpoint);
   router.post('/servers/:name/toggle', toggleServer);
   router.post('/servers/:serverName/tools/:toolName/toggle', toggleTool);
   router.put('/servers/:serverName/tools/:toolName/description', updateToolDescription);
   router.post('/servers/:serverName/prompts/:promptName/toggle', togglePrompt);
   router.put('/servers/:serverName/prompts/:promptName/description', updatePromptDescription);
   router.put('/system-config', updateSystemConfig);
+  router.post('/debug/force-refresh-tools', forceRefreshTools);
 
   // Group management routes
   router.get('/groups', getGroups);
@@ -115,8 +172,25 @@ export const initRoutes = (app: express.Application): void => {
   router.delete('/users/:username', deleteExistingUser);
   router.get('/users-stats', getUserStats);
 
+  // OAuth Client management routes (admin only)
+  router.get('/oauth/clients', getAllClients);
+  router.get('/oauth/clients/:clientId', getClient);
+  router.post(
+    '/oauth/clients',
+    [
+      check('name', 'Client name is required').not().isEmpty(),
+      check('redirectUris', 'At least one redirect URI is required').isArray({ min: 1 }),
+    ],
+    createClient,
+  );
+  router.put('/oauth/clients/:clientId', updateClient);
+  router.delete('/oauth/clients/:clientId', deleteClient);
+  router.post('/oauth/clients/:clientId/regenerate-secret', regenerateSecret);
+
   // Tool management routes
   router.post('/tools/call/:server', callTool);
+  router.get('/tools/list', listTools);
+router.post('/tools/call', callToolMCP);
 
   // Prompt management routes
   router.post('/mcp/:serverName/prompts/:promptName', getPrompt);
@@ -144,10 +218,18 @@ export const initRoutes = (app: express.Application): void => {
   router.get('/cloud/servers/:serverName/tools', getCloudServerToolsList);
   router.post('/cloud/servers/:serverName/tools/:toolName/call', callCloudTool);
 
+  // Registry routes (proxy to official MCP registry)
+  router.get('/registry/servers', getAllRegistryServers);
+  router.get('/registry/servers/:serverName/versions', getRegistryServerVersions);
+  router.get('/registry/servers/:serverName/versions/:version', getRegistryServerVersion);
+
   // Log routes
   router.get('/logs', getAllLogs);
   router.delete('/logs', clearLogs);
   router.get('/logs/stream', streamLogs);
+
+  // MCP settings export route
+  router.get('/mcp-settings/export', getMcpSettingsJson);
 
   // Auth routes - move to router instead of app directly
   router.post(

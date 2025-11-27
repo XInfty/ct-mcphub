@@ -17,20 +17,17 @@ const getOpenAIConfig = () => {
 
 // Constants for embedding models
 const EMBEDDING_DIMENSIONS = 1536; // OpenAI's text-embedding-3-small outputs 1536 dimensions
-const BGE_DIMENSIONS = 1024; // BAAI/bge-m3 outputs 1024 dimensions
-const FALLBACK_DIMENSIONS = 100; // Fallback implementation uses 100 dimensions
+const BGE_MISTRAL_DIMENSIONS = 1024; // BAAI/bge-m3 and Mistral-embed both output 1024 dimensions
 
 // Get dimensions for a model
 const getDimensionsForModel = (model: string): number => {
-  if (model.includes('bge-m3')) {
-    return BGE_DIMENSIONS;
+  if (model.includes('mistral-embed') || model.includes('bge-m3')) {
+    return BGE_MISTRAL_DIMENSIONS;
   } else if (model.includes('text-embedding-3')) {
     return EMBEDDING_DIMENSIONS;
-  } else if (model === 'fallback' || model === 'simple-hash') {
-    return FALLBACK_DIMENSIONS;
   }
-  // Default to OpenAI dimensions
-  return EMBEDDING_DIMENSIONS;
+  // Default to 1024 dimensions (Mistral/BGE)
+  return BGE_MISTRAL_DIMENSIONS;
 };
 
 // Initialize the OpenAI client with smartRouting configuration
@@ -53,138 +50,65 @@ const getOpenAIClient = () => {
  * @returns Promise with vector embedding as number array
  */
 async function generateEmbedding(text: string): Promise<number[]> {
-  try {
-    const config = getOpenAIConfig();
-    const openai = getOpenAIClient();
+  const config = getOpenAIConfig();
 
-    // Check if API key is configured
-    if (!openai.apiKey) {
-      console.warn('OpenAI API key is not configured. Using fallback embedding method.');
-      return generateFallbackEmbedding(text);
-    }
+  // Check if API key is configured
+  if (!config.apiKey) {
+    throw new Error('API key is not configured. Smart routing requires valid embedding API.');
+  }
 
-    // Truncate text if it's too long (OpenAI has token limits)
-    const truncatedText = text.length > 8000 ? text.substring(0, 8000) : text;
+  // Truncate text if it's too long (token limits)
+  const truncatedText = text.length > 8000 ? text.substring(0, 8000) : text;
 
-    // Call OpenAI's embeddings API
-    const response = await openai.embeddings.create({
-      model: config.embeddingModel, // Modern model with better performance
-      input: truncatedText,
+  // For Mistral API: use direct fetch instead of OpenAI SDK to avoid compatibility issues
+  // OpenAI SDK may truncate embeddings to 256 dimensions when used with Mistral endpoint
+  if (config.baseURL?.includes('mistral')) {
+    const response = await fetch(`${config.baseURL}/embeddings`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${config.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: config.embeddingModel,
+        input: truncatedText,
+      }),
     });
 
-    // Return the embedding
-    return response.data[0].embedding;
-  } catch (error) {
-    console.error('Error generating embedding:', error);
-    console.warn('Falling back to simple embedding method');
-    return generateFallbackEmbedding(text);
-  }
-}
-
-/**
- * Fallback embedding function using a simple approach when OpenAI API is unavailable
- * @param text Text to generate embeddings for
- * @returns Vector embedding as number array
- */
-function generateFallbackEmbedding(text: string): number[] {
-  const words = text.toLowerCase().split(/\s+/);
-  const vocabulary = [
-    'search',
-    'find',
-    'get',
-    'fetch',
-    'retrieve',
-    'query',
-    'map',
-    'location',
-    'weather',
-    'file',
-    'directory',
-    'email',
-    'message',
-    'send',
-    'create',
-    'update',
-    'delete',
-    'browser',
-    'web',
-    'page',
-    'click',
-    'navigate',
-    'screenshot',
-    'automation',
-    'database',
-    'table',
-    'record',
-    'insert',
-    'select',
-    'schema',
-    'data',
-    'image',
-    'photo',
-    'video',
-    'media',
-    'upload',
-    'download',
-    'convert',
-    'text',
-    'document',
-    'pdf',
-    'excel',
-    'word',
-    'format',
-    'parse',
-    'api',
-    'rest',
-    'http',
-    'request',
-    'response',
-    'json',
-    'xml',
-    'time',
-    'date',
-    'calendar',
-    'schedule',
-    'reminder',
-    'clock',
-    'math',
-    'calculate',
-    'number',
-    'sum',
-    'average',
-    'statistics',
-    'user',
-    'account',
-    'login',
-    'auth',
-    'permission',
-    'role',
-  ];
-
-  // Create vector with fallback dimensions
-  const vector = new Array(FALLBACK_DIMENSIONS).fill(0);
-
-  words.forEach((word) => {
-    const index = vocabulary.indexOf(word);
-    if (index >= 0 && index < vector.length) {
-      vector[index] += 1;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Mistral API error: ${JSON.stringify(error)}`);
     }
-    // Add some randomness based on word hash
-    const hash = word.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-    vector[hash % vector.length] += 0.1;
+
+    const data = await response.json();
+    const embedding = data.data[0].embedding;
+    console.log(`Generated embedding with ${embedding.length} dimensions using model: ${config.embeddingModel}`);
+    return embedding;
+  }
+
+  // For OpenAI API: use SDK
+  const openai = getOpenAIClient();
+  const response = await openai.embeddings.create({
+    model: config.embeddingModel,
+    input: truncatedText,
   });
 
-  // Normalize the vector
-  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
-  if (magnitude > 0) {
-    return vector.map((val) => val / magnitude);
-  }
+  const embedding = response.data[0].embedding;
+  console.log(`Generated embedding with ${embedding.length} dimensions using model: ${config.embeddingModel}`);
 
-  return vector;
+  // Return the embedding
+  return embedding;
 }
+
+// Removed: Fallback embedding function - smart routing requires proper embedding API
+
+// Global queue to serialize embedding generation across all servers
+// This prevents parallel requests from multiple servers hitting Mistral rate limits
+let embeddingQueue: Promise<void> = Promise.resolve();
 
 /**
  * Save tool information as vector embeddings
+ * Queued execution to respect API rate limits across all servers
  * @param serverName Server name
  * @param tools Array of tools to save
  */
@@ -192,6 +116,25 @@ export const saveToolsAsVectorEmbeddings = async (
   serverName: string,
   tools: Tool[],
 ): Promise<void> => {
+  // Add to global queue to serialize across all servers
+  embeddingQueue = embeddingQueue.then(async () => {
+    await saveToolsAsVectorEmbeddingsImpl(serverName, tools);
+  }).catch((error) => {
+    console.error(`Embedding queue error for server ${serverName}:`, error);
+  });
+
+  return embeddingQueue;
+};
+
+/**
+ * Internal implementation of saveToolsAsVectorEmbeddings
+ * @param serverName Server name
+ * @param tools Array of tools to save
+ */
+async function saveToolsAsVectorEmbeddingsImpl(
+  serverName: string,
+  tools: Tool[],
+): Promise<void> {
   try {
     if (tools.length === 0) {
       console.warn(`No tools to save for server: ${serverName}`);
@@ -208,7 +151,16 @@ export const saveToolsAsVectorEmbeddings = async (
       'vectorEmbeddings',
     )() as VectorEmbeddingRepository;
 
-    for (const tool of tools) {
+    // Simple rate limiter: delay between API calls
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    let successCount = 0;
+    let errorCount = 0;
+
+    // Process each tool with rate limiting
+    // Mistral allows 60 requests/minute = 1 request per second
+    for (let i = 0; i < tools.length; i++) {
+      const tool = tools[i];
+
       // Create searchable text from tool information
       const searchableText = [
         tool.name,
@@ -248,17 +200,53 @@ export const saveToolsAsVectorEmbeddings = async (
           },
           config.embeddingModel, // Store the model used for this embedding
         );
-      } catch (toolError) {
-        console.error(`Error processing tool ${tool.name} for server ${serverName}:`, toolError);
-        // Continue with the next tool rather than failing the whole batch
+
+        successCount++;
+        console.log(`Saved embedding ${i + 1}/${tools.length} for tool ${tool.name} (server: ${serverName})`);
+      } catch (toolError: any) {
+        errorCount++;
+        if (toolError?.status === 429) {
+          console.error(`Rate limit exceeded for tool ${tool.name}, waiting 10 seconds...`);
+          await delay(10000); // Wait 10 seconds on rate limit
+          // Retry once
+          try {
+            const embedding = await generateEmbedding(searchableText);
+            await checkDatabaseVectorDimensions(embedding.length);
+            await vectorRepository.saveEmbedding(
+              'tool',
+              `${serverName}:${tool.name}`,
+              searchableText,
+              embedding,
+              {
+                serverName,
+                toolName: tool.name,
+                description: tool.description,
+                inputSchema: tool.inputSchema,
+              },
+              config.embeddingModel,
+            );
+            successCount++;
+            errorCount--;
+            console.log(`Retry successful for tool ${tool.name}`);
+          } catch (retryError) {
+            console.error(`Retry failed for tool ${tool.name}:`, retryError);
+          }
+        } else {
+          console.error(`Error processing tool ${tool.name} for server ${serverName}:`, toolError);
+        }
+      }
+
+      // Add delay between requests (1 request per second = 60 requests/minute max)
+      if (i < tools.length - 1) {
+        await delay(1000);
       }
     }
 
-    console.log(`Saved ${tools.length} tool embeddings for server: ${serverName}`);
+    console.log(`Saved ${successCount} of ${tools.length} tool embeddings for server: ${serverName} (${errorCount} errors)`);
   } catch (error) {
     console.error(`Error saving tool embeddings for server ${serverName}:`, error);
   }
-};
+}
 
 /**
  * Search for tools using vector similarity

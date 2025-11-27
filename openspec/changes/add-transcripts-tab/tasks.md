@@ -1,0 +1,27 @@
+## 1. Implementation
+- [ ] 1.1 **Backend: External Communication Capture and Storage**:
+    - [ ] 1.1.1 Implement a mechanism to intercept and log all outgoing and incoming external communications (A2A, MCP, etc.) before / after transmission.
+    - [ ] 1.1.2 Store these communication logs in a persistent, queryable data store, ensuring `AuditChain` compliance.
+    - [ ] 1.1.3 Design a data model for these external communications, including `timestamp`, `sender`, `recipient`, `channel` (A2A, MCP), `message_content`, `message_type`, and `associated_task_id`.
+- [ ] 1.2 **Backend: Real-time Streaming Service**:
+    - [ ] 1.2.1 Implement a real-time streaming API (e.g., WebSocket, SSE) to push new external communication logs to the frontend.
+    - [ ] 1.2.2 Ensure the streaming service can filter logs based on user/agent context if necessary.
+- [ ] 1.3 **Frontend: UI Component for Transcripts Tab**:
+    - [ ] 1.3.1 Create a new React/Vue/Angular component for the 'Transcripts' tab.
+    - [ ] 1.3.2 Position this tab in the left sidebar between 'Chats' and 'Tasks'.
+    - [ ] 1.3.3 Implement basic layout and styling for the tab.
+- [ ] 1.4 **Frontend: Data Display and Interaction**:
+    - [ ] 1.4.1 Integrate the 'Transcripts' tab with the real-time streaming API to display new communications as they occur.
+    - [ ] 1.4.2 Render each external communication log entry in a format equivalent to existing chat messages (e.g., sender, timestamp, message content).
+    - [ ] 1.4.3 Implement basic filtering and search capabilities within the tab (optional, can be a follow-up task).
+    - [ ] 1.4.4 Ensure scrolling, message grouping, and readability are optimized.
+- [ ] 1.5 **Frontend: Navigation and State Management**:
+    - [ ] 1.5.1 Update the sidebar navigation component to include the new 'Transcripts' tab.
+    - [ ] 1.5.2 Manage the active state of the 'Transcripts' tab within the UI's routing system.
+- [ ] 1.6 **Validation & Testing**:
+    - [ ] 1.6.1 Develop unit tests for backend data capture, storage, and streaming logic.
+    - [ ] 1.6.2 Implement end-to-end integration tests to verify real-time display of external communications in the UI.
+    - [ ] 1.6.3 Perform UI/UX testing to ensure the tab is intuitive and provides a seamless user experience.
+- [ ] 1.7 **Documentation Update**:
+    - [ ] 1.7.1 Update user documentation to explain the new 'Transcripts' tab and its functionality.
+    - [ ] 1.7.2 Update developer documentation on how external communications are captured, stored, and streamed.

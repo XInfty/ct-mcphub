@@ -1,9 +1,33 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { getToken } from '../services/authService';
 import ThemeSwitch from '@/components/ui/ThemeSwitch';
 import LanguageSwitch from '@/components/ui/LanguageSwitch';
+import DefaultPasswordWarningModal from '@/components/ui/DefaultPasswordWarningModal';
+
+const sanitizeReturnUrl = (value: string | null): string | null => {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    // Support both relative paths and absolute URLs on the same origin
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost';
+    const url = new URL(value, origin);
+    if (url.origin !== origin) {
+      return null;
+    }
+    const relativePath = `${url.pathname}${url.search}${url.hash}`;
+    return relativePath || '/';
+  } catch {
+    if (value.startsWith('/') && !value.startsWith('//')) {
+      return value;
+    }
+    return null;
+  }
+};
 
 const LoginPage: React.FC = () => {
   const { t } = useTranslation();
@@ -11,8 +35,48 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showDefaultPasswordWarning, setShowDefaultPasswordWarning] = useState(false);
   const { login } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const returnUrl = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return sanitizeReturnUrl(params.get('returnUrl'));
+  }, [location.search]);
+
+  const buildRedirectTarget = useCallback(() => {
+    if (!returnUrl) {
+      return '/';
+    }
+
+    // Only attach JWT when returning to the OAuth authorize endpoint
+    if (!returnUrl.startsWith('/oauth/authorize')) {
+      return returnUrl;
+    }
+
+    const token = getToken();
+    if (!token) {
+      return returnUrl;
+    }
+
+    try {
+      const origin = window.location.origin;
+      const url = new URL(returnUrl, origin);
+      url.searchParams.set('token', token);
+      return `${url.pathname}${url.search}${url.hash}`;
+    } catch {
+      const separator = returnUrl.includes('?') ? '&' : '?';
+      return `${returnUrl}${separator}token=${encodeURIComponent(token)}`;
+    }
+  }, [returnUrl]);
+
+  const redirectAfterLogin = useCallback(() => {
+    if (returnUrl) {
+      window.location.assign(buildRedirectTarget());
+    } else {
+      navigate('/');
+    }
+  }, [buildRedirectTarget, navigate, returnUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,10 +90,15 @@ const LoginPage: React.FC = () => {
         return;
       }
 
-      const success = await login(username, password);
+      const result = await login(username, password);
 
-      if (success) {
-        navigate('/');
+      if (result.success) {
+        if (result.isUsingDefaultPassword) {
+          // Show warning modal instead of navigating immediately
+          setShowDefaultPasswordWarning(true);
+        } else {
+          redirectAfterLogin();
+        }
       } else {
         setError(t('auth.loginFailed'));
       }
@@ -38,6 +107,11 @@ const LoginPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseWarning = () => {
+    setShowDefaultPasswordWarning(false);
+    redirectAfterLogin();
   };
 
   return (
@@ -138,6 +212,12 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Default Password Warning Modal */}
+      <DefaultPasswordWarningModal
+        isOpen={showDefaultPasswordWarning}
+        onClose={handleCloseWarning}
+      />
     </div>
   );
 };
