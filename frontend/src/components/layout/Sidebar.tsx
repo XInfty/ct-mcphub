@@ -52,15 +52,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
         </svg>
       ),
     },
-    {
-      path: '/stratas',
-      label: t('nav.stratas') || 'Stratas',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-        </svg>
-      ),
-    },
     ...(auth.user?.isAdmin && usePermissionCheck('x') ? [{
       path: '/users',
       label: t('nav.users'),
@@ -92,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
 
   return (
     <aside
-      className={`bg-[#000000] dark:bg-[#000000] shadow-sm transition-all duration-300 ease-in-out flex flex-col h-full relative border-r border-[#ff6600]/30 ${collapsed ? 'w-16' : 'w-64'
+      className={`bg-white dark:bg-gray-800 shadow-sm transition-all duration-300 ease-in-out flex flex-col h-full relative ${collapsed ? 'w-16' : 'w-64'
         }`}
     >
       {/* Scrollable navigation area */}
@@ -105,8 +96,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
               className={({ isActive }) =>
                 `flex items-center px-2.5 py-2 rounded-lg transition-colors duration-200
          ${isActive
-                  ? 'bg-[#ff6600]/20 text-[#ff6600] border border-[#ff6600]/30'
-                  : 'text-[#ff6600]/70 hover:bg-[#333333] hover:text-[#ff6600]'}`
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-100'}`
               }
               end={item.path === '/'}
             >
@@ -118,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
       </div>
 
       {/* User profile menu fixed at the bottom */}
-      <div className="p-3 bg-[#000000] dark:bg-[#000000] border-t border-[#ff6600]/30">
+      <div className="p-3 bg-white dark:bg-gray-800">
         <UserProfileMenu collapsed={collapsed} version={appVersion} />
       </div>
     </aside>

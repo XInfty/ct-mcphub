@@ -229,15 +229,6 @@ export interface Group {
   servers: string[] | IGroupServerConfig[]; // Supports both old and new format
 }
 
-// Strata types (Open-Strata MCP router integration)
-export interface Strata {
-  id: string;
-  name: string;
-  description?: string;
-  servers: IGroupServerConfig[];
-  owner?: string;
-}
-
 // Environment variable types
 export interface EnvVar {
   key: string;
@@ -303,13 +294,6 @@ export interface GroupFormData {
   name: string;
   description: string;
   servers: string[] | IGroupServerConfig[]; // Updated to support new format
-}
-
-// Strata form data types
-export interface StrataFormData {
-  name: string;
-  description: string;
-  servers: IGroupServerConfig[];
 }
 
 // API response types

@@ -31,13 +31,6 @@ import {
   updateGroupServerTools,
 } from '../controllers/groupController.js';
 import {
-  getStratas,
-  getStrata,
-  createNewStrata,
-  updateExistingStrata,
-  deleteExistingStrata,
-} from '../controllers/strataController.js';
-import {
   getUsers,
   getUser,
   createUser,
@@ -170,13 +163,6 @@ app.post('/tools/call', callToolMCP);
   router.get('/groups/:id/server-configs', getGroupServerConfigs);
   router.get('/groups/:id/server-configs/:serverName', getGroupServerConfig);
   router.put('/groups/:id/server-configs/:serverName/tools', updateGroupServerTools);
-
-  // Strata management routes (Open-Strata MCP router integration)
-  router.get('/stratas', getStratas);
-  router.get('/stratas/:id', getStrata);
-  router.post('/stratas', createNewStrata);
-  router.put('/stratas/:id', updateExistingStrata);
-  router.delete('/stratas/:id', deleteExistingStrata);
 
   // User management routes (admin only)
   router.get('/users', getUsers);

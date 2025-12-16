@@ -308,7 +308,11 @@ const callToolWithReconnect = async (
               version: '1.0.0',
             },
             {
-              capabilities: {},
+              capabilities: {
+                prompts: {},
+                resources: {},
+                tools: {},
+              },
             },
           );
 
@@ -501,7 +505,11 @@ export const initializeClientsFromSettings = async (
           version: '1.0.0',
         },
         {
-          capabilities: {},
+          capabilities: {
+            prompts: {},
+            resources: {},
+            tools: {},
+          },
         },
       );
 
@@ -916,25 +924,6 @@ export const handleListToolsRequest = async (_: any, extra: any) => {
   const sessionId = extra.sessionId || '';
   const group = getGroup(sessionId);
   console.log(`Handling ListToolsRequest for group: ${group}`);
-
-  // Special handling for Strata: if group is a strata ID, return tools from the strata server
-  if (group) {
-    const { getStrataByIdOrName } = await import('./strataService.js');
-    const strata = getStrataByIdOrName(group);
-    if (strata) {
-      const strataServerName = `strata-${strata.name}`;
-      console.log(`Group is a strata, using strata server: ${strataServerName}`);
-      // Find the strata server in serverInfos
-      const strataServer = serverInfos.find(s => s.name === strataServerName);
-      if (strataServer && strataServer.tools) {
-        return {
-          tools: strataServer.tools,
-        };
-      }
-      console.warn(`Strata server ${strataServerName} not found or has no tools`);
-      return { tools: [] };
-    }
-  }
 
   // Special handling for $smart group to return special tools
   // Support both $smart and $smart/{group} patterns
@@ -1477,25 +1466,6 @@ export const handleListPromptsRequest = async (_: any, extra: any) => {
   const sessionId = extra.sessionId || '';
   const group = getGroup(sessionId);
   console.log(`Handling ListPromptsRequest for group: ${group}`);
-
-  // Special handling for Strata: if group is a strata ID, return prompts from the strata server
-  if (group) {
-    const { getStrataByIdOrName } = await import('./strataService.js');
-    const strata = getStrataByIdOrName(group);
-    if (strata) {
-      const strataServerName = `strata-${strata.name}`;
-      console.log(`Group is a strata, using strata server: ${strataServerName}`);
-      // Find the strata server in serverInfos
-      const strataServer = serverInfos.find(s => s.name === strataServerName);
-      if (strataServer && strataServer.prompts) {
-        return {
-          prompts: strataServer.prompts,
-        };
-      }
-      console.warn(`Strata server ${strataServerName} not found or has no prompts`);
-      return { prompts: [] };
-    }
-  }
 
   const allServerInfos = getDataService()
     .filterData(serverInfos)

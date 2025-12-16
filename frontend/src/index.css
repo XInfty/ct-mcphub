@@ -22,131 +22,81 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* X^∞ Theme: Pure Black (#000) + Dark Orange (#ff6600) */
-.dark html {
-  background-color: #000000 !important;
-}
-
+/* Dark mode override styles - these will apply when dark class is on html element */
 .dark body {
-  background-color: #000000 !important;
-  color: #cc5200 !important;
+  background-color: #1f2a37;
+  color: #e5e7eb;
 }
 
 .dark .bg-white {
-  background-color: #000000 !important;
+  background-color: #1f2937 !important;
 }
 
 .dark .text-gray-900 {
-  color: #cc5200 !important;
+  color: #f9fafb !important;
 }
 
 .dark .text-gray-800 {
-  color: #cc5200 !important;
+  color: #f3f4f6 !important;
 }
 
 .dark .text-gray-700 {
-  color: #cc5200 !important;
+  color: #e5e7eb !important;
 }
 
 .dark .text-gray-600 {
-  color: #cc5200 !important;
+  color: #d1d5db !important;
 }
 
+/* .dark .text-gray-500 {
+  color: #9ca3af !important;
+} */
+
 .dark .border-gray-300 {
-  border: none !important;
+  border-color: #2f3b4c !important;
 }
 
 .dark .border-gray-200 {
-  border: none !important;
+  border-color: #2f3b4c !important;
 }
 
 .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
-  border: none !important;
+  border-color: #2f3b4c !important;
 }
 
 .dark .bg-gray-100 {
-  background-color: #000000 !important;
+  background-color: #374151 !important;
 }
 
 /* Specific hover effects for dark mode */
 .dark .hover\:bg-gray-100:hover {
-  background-color: #000000 !important;
+  background-color: rgba(110, 127, 156, 0.15) !important;
 }
 
 .dark .hover\:text-gray-900:hover {
-  color: #cc5200 !important;
+  color: rgb(190, 188, 185) !important;
 }
 
 .dark .bg-gray-50 {
-  background-color: #000000 !important;
+  background-color: #1f2937 !important;
 }
 
 .dark .text-blue-700 {
-  color: #cc5200 !important;
+  color: white !important;
 }
 
 .dark .bg-blue-50 {
-  background-color: #000000 !important;
+  background-color: #4b5563 !important;
 }
 
 .dark .bg-blue-200 {
-  background-color: #000000 !important;
+  background-color: #576476 !important;
 }
-
-/* Additional overrides for black backgrounds in dark mode */
-.dark .bg-gray-200 { background-color: #000000 !important; }
-.dark .bg-gray-300 { background-color: #000000 !important; }
-.dark .bg-gray-400 { background-color: #000000 !important; }
-
-.dark .bg-red-50 { background-color: #000000 !important; }
-.dark .bg-red-100 { background-color: #000000 !important; }
-
-.dark .bg-blue-100 { background-color: #000000 !important; }
-
-.dark .bg-green-50 { background-color: #000000 !important; }
-.dark .bg-green-100 { background-color: #000000 !important; }
-
-.dark .bg-yellow-50 { background-color: #000000 !important; }
-.dark .bg-yellow-100 { background-color: #000000 !important; }
-
-.dark .bg-purple-50 { background-color: #000000 !important; }
-.dark .bg-purple-100 { background-color: #000000 !important; }
-
-.dark .bg-amber-50 { background-color: #000000 !important; }
-.dark .bg-amber-100 { background-color: #000000 !important; }
-
-.dark .bg-red-400\/80 { background-color: #000000 !important; }
-.dark .bg-yellow-400\/80 { background-color: #000000 !important; }
-.dark .bg-purple-400\/80 { background-color: #000000 !important; }
-.dark .bg-blue-400\/80 { background-color: #000000 !important; }
-.dark .bg-green-400\/80 { background-color: #000000 !important; }
-.dark .bg-orange-400\/80 { background-color: #000000 !important; }
-.dark .bg-gray-400\/80 { background-color: #000000 !important; }
-
-.dark .bg-indigo-600 { background-color: #000000 !important; }
-
-.dark .bg-card { background-color: #000000 !important; } /* for LogViewer */
-
-/* Also need to address hover states for these */
-.dark .hover\:bg-gray-50:hover { background-color: #000000 !important; }
-.dark .hover\:bg-gray-200:hover { background-color: #000000 !important; }
-.dark .hover\:bg-gray-300:hover { background-color: #000000 !important; }
-
-.dark .hover\:bg-blue-50:hover { background-color: #000000 !important; }
-.dark .hover\:bg-blue-100:hover { background-color: #000000 !important; }
-.dark .hover\:bg-red-50:hover { background-color: #000000 !important; }
-.dark .hover\:bg-red-100:hover { background-color: #000000 !important; }
-.dark .hover\:bg-green-50:hover { background-color: #000000 !important; }
-.dark .hover\:bg-green-100:hover { background-color: #000000 !important; }
-.dark .hover\:bg-yellow-50:hover { background-color: #000000 !important; }
-.dark .hover\:bg-yellow-100:hover { background-color: #000000 !important; }
-.dark .hover\:bg-purple-50:hover { background-color: #000000 !important; }
-.dark .hover\:bg-purple-100:hover { background-color: #000000 !important; }
 
 .dark .shadow {
   box-shadow:
-    0 4px 12px rgba(255, 102, 0, 0.15),
-    0 2px 6px rgba(255, 102, 0, 0.1) !important;
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .bg-custom-blue {
@@ -163,11 +113,11 @@ body {
   border: 1px solid #a6d7b7;
 }
 
-/* Enhanced status badge styles for X^∞ theme */
+/* Enhanced status badge styles for dark theme */
 .dark .status-badge-online {
   background-color: rgba(76, 175, 80, 0.15) !important;
-  color: #cc5200 !important;
-  border: 1px solid rgba(0, 255, 0, 0.3);
+  color: rgba(129, 199, 132, 0.9) !important;
+  border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
 .status-badge-offline {
@@ -178,8 +128,8 @@ body {
 
 .dark .status-badge-offline {
   background-color: rgba(107, 114, 128, 0.15) !important;
-  color: #cc5200 !important;
-  border: 1px solid rgba(153, 153, 153, 0.3);
+  color: rgba(156, 163, 175, 0.9) !important;
+  border: 1px solid rgba(107, 114, 128, 0.3);
 }
 
 .status-badge-connecting {
@@ -190,8 +140,8 @@ body {
 
 .dark .status-badge-connecting {
   background-color: rgba(255, 193, 7, 0.15) !important;
-  color: #cc5200 !important;
-  border: 1px solid rgba(255, 170, 0, 0.3);
+  color: rgba(255, 213, 79, 0.9) !important;
+  border: 1px solid rgba(255, 193, 7, 0.3);
 }
 
 .status-badge-oauth-required {
@@ -202,29 +152,29 @@ body {
 
 .dark .status-badge-oauth-required {
   background-color: rgba(156, 39, 176, 0.15) !important;
-  color: #cc5200 !important;
-  border: 1px solid rgba(204, 102, 255, 0.3);
+  color: rgba(186, 104, 200, 0.9) !important;
+  border: 1px solid rgba(156, 39, 176, 0.3);
 }
 
-/* Enhanced status icons for X^∞ theme */
+/* Enhanced status icons for dark theme */
 .dark .status-icon-blue {
-  background-color: rgba(255, 102, 0, 0.15) !important;
-  color: #cc5200 !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: rgba(96, 165, 250, 0.9) !important;
 }
 
 .dark .status-icon-green {
-  background-color: rgba(0, 255, 0, 0.15) !important;
-  color: #cc5200 !important;
+  background-color: rgba(76, 175, 80, 0.15) !important;
+  color: rgba(129, 199, 132, 0.9) !important;
 }
 
 .dark .status-icon-red {
-  background-color: rgba(255, 0, 0, 0.15) !important;
-  color: #cc5200 !important;
+  background-color: rgba(244, 67, 54, 0.15) !important;
+  color: rgba(239, 154, 154, 0.9) !important;
 }
 
 .dark .status-icon-yellow {
-  background-color: rgba(255, 170, 0, 0.15) !important;
-  color: #cc5200 !important;
+  background-color: rgba(255, 193, 7, 0.15) !important;
+  color: rgba(255, 213, 79, 0.9) !important;
 }
 
 /* Enhanced card hover effects */
@@ -236,8 +186,8 @@ body {
 .dashboard-card:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 8px 25px rgba(255, 102, 0, 0.2),
-    0 4px 12px rgba(255, 102, 0, 0.15) !important;
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Icon container hover effects */
@@ -252,30 +202,30 @@ body {
 
 /* Progress bar enhancements */
 .progress-bar-online {
-  background: linear-gradient(90deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0.6));
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.8), rgba(129, 199, 132, 0.6));
 }
 
 .progress-bar-offline {
-  background: linear-gradient(90deg, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0.6));
+  background: linear-gradient(90deg, rgba(244, 67, 54, 0.8), rgba(239, 154, 154, 0.6));
 }
 
 .progress-bar-connecting {
-  background: linear-gradient(90deg, rgba(255, 170, 0, 0.8), rgba(255, 170, 0, 0.6));
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.8), rgba(255, 213, 79, 0.6));
 }
 
-/* Table enhancements for X^∞ theme */
+/* Table enhancements for dark theme */
 .dark .table-container {
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .dark thead {
-  background-color: #000000 !important;
+  background-color: #252d3a !important;
 }
 
 .dark tbody tr {
-  border: none !important;
+  border-bottom: 1px solid #2f3b4c;
 }
 
 tbody tr:hover {
@@ -284,24 +234,24 @@ tbody tr:hover {
 }
 
 .dark tbody tr:hover {
-  background-color: #000000 !important; /* Changed from #222222 */
+  background-color: rgba(55, 65, 81, 0.5) !important;
   transition: background-color 0.2s ease;
 }
 
-/* Error box enhancements for X^∞ theme */
+/* Error box enhancements for dark theme */
 .dark .error-box {
-  background-color: rgba(255, 0, 0, 0.1) !important;
-  border: none !important;
+  background-color: rgba(244, 67, 54, 0.1) !important;
+  border-color: rgba(244, 67, 54, 0.3) !important;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.1);
 }
 
 .dark .error-box h3 {
-  color: #cc5200 !important;
+  color: rgba(239, 154, 154, 0.9) !important;
 }
 
 .dark .error-box p {
-  color: #cc5200 !important;
+  color: #d1d5db !important;
 }
 
 /* Loading container enhancements */
@@ -311,8 +261,8 @@ tbody tr:hover {
 }
 
 .dark .loading-container {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  border: none !important;
+  background-color: rgba(31, 41, 55, 0.8) !important;
+  border: 1px solid #2f3b4c;
 }
 
 .label-primary {
@@ -321,8 +271,8 @@ tbody tr:hover {
 }
 
 .dark .label-primary {
-  background-color: rgba(255, 102, 0, 0.15) !important;
-  color: #cc5200 !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: rgba(96, 165, 250, 0.9) !important;
 }
 
 .label-secondary {
@@ -331,8 +281,8 @@ tbody tr:hover {
 }
 
 .dark .label-secondary {
-  background-color: rgba(0, 255, 0, 0.15) !important;
-  color: #cc5200 !important;
+  background-color: rgba(76, 175, 80, 0.15) !important;
+  color: rgba(129, 199, 132, 0.9) !important;
 }
 
 .btn-primary {
@@ -351,19 +301,19 @@ tbody tr:hover {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* Enhanced button styles for X^∞ theme */
+/* Enhanced button styles for dark theme */
 .dark .btn-primary {
-  background-color: #000000 !important;
-  color: #cc5200 !important;
-  border: none;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: rgba(96, 165, 250, 0.9) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
   transition: all 0.3s ease;
 }
 
 .dark .btn-primary:hover {
-  background-color: rgba(255, 102, 0, 0.25) !important;
-  color: #cc5200 !important;
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  color: rgba(96, 165, 250, 1) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 .btn-secondary {
@@ -382,15 +332,15 @@ tbody tr:hover {
 }
 
 .dark .btn-secondary {
-  background-color: #000000 !important;
-  color: #cc5200 !important;
-  border: none;
+  background-color: rgba(107, 114, 128, 0.15) !important;
+  color: rgba(156, 163, 175, 0.9) !important;
+  border: 1px solid rgba(107, 114, 128, 0.3) !important;
   transition: all 0.3s ease;
 }
 
 .dark .btn-secondary:hover {
-  background-color: rgba(51, 51, 51, 0.8) !important;
-  color: #cc5200 !important;
+  background-color: rgba(107, 114, 128, 0.25) !important;
+  color: rgba(156, 163, 175, 1) !important;
   transform: translateY(-1px);
 }
 
@@ -408,15 +358,15 @@ tbody tr:hover {
 }
 
 .dark .btn-warning {
-  background-color: #000000 !important;
-  color: #cc5200 !important;
-  border: none;
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  color: rgba(250, 204, 21, 0.9) !important;
+  border: 1px solid rgba(234, 179, 8, 0.3);
   transition: all 0.3s ease;
 }
 
 .dark .btn-warning:hover {
-  background-color: rgba(255, 170, 0, 0.25) !important;
-  color: #cc5200 !important;
+  background-color: rgba(234, 179, 8, 0.25) !important;
+  color: rgba(250, 204, 21, 1) !important;
   transform: translateY(-1px);
 }
 
@@ -434,17 +384,17 @@ tbody tr:hover {
 }
 
 .dark .btn-danger {
-  background-color: #000000 !important;
-  color: #cc5200 !important;
-  border: none;
+  background-color: rgba(244, 67, 54, 0.15) !important;
+  color: rgba(239, 154, 154, 0.9) !important;
+  border: 1px solid rgba(244, 67, 54, 0.3);
   transition: all 0.3s ease;
 }
 
 .dark .btn-danger:hover {
-  background-color: rgba(255, 0, 0, 0.25) !important;
-  color: #cc5200 !important;
+  background-color: rgba(244, 67, 54, 0.25) !important;
+  color: rgba(239, 154, 154, 1) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
 }
 
 .form-input {
@@ -460,21 +410,21 @@ tbody tr:hover {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Form input enhancements for X^∞ theme */
+/* Form input enhancements for dark theme */
 .dark .form-input {
-  background-color: #000000 !important;
-  border: none !important;
-  color: #cc5200 !important;
+  background-color: #1f2937 !important;
+  border-color: #2f3b4c !important;
+  color: #e5e7eb !important;
   border-radius: 8px;
 }
 
 .dark .form-input:focus {
-  border-color: rgba(255, 102, 0, 0.5) !important;
-  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
 }
 
 .dark .form-input::placeholder {
-  color: #cc5200 !important;
+  color: #9ca3af !important;
 }
 
 /* Card spacing and layout improvements */
@@ -488,12 +438,11 @@ tbody tr:hover {
 }
 
 .dark .page-card {
-  background-color: #000000 !important;
-  border: none !important;
+  background-color: #1f2937 !important;
+  border: 1px solid #2f3b4c;
   box-shadow:
-    0 4px 12px rgba(255, 102, 0, 0.15),
-    0 2px 6px rgba(255, 102, 0, 0.1);
-  border-radius: 12px;
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Custom text color to match status-icon-red */
@@ -502,7 +451,7 @@ tbody tr:hover {
 }
 
 .dark .text-status-red {
-  color: #cc5200 !important;
+  color: rgba(239, 154, 154, 0.9) !important;
 }
 
 /* External link styles */
@@ -521,12 +470,12 @@ tbody tr:hover {
 }
 
 .dark .external-link {
-  color: #cc5200 !important;
+  color: #60a5fa !important; /* Blue-400 for dark mode */
 }
 
 .dark .external-link:hover {
-  color: #cc5200 !important;
-  border-bottom-color: #ff8833;
+  color: #93c5fd !important; /* Blue-300 for dark mode */
+  border-bottom-color: #93c5fd;
 }
 
 .border-red {
@@ -534,36 +483,36 @@ tbody tr:hover {
 }
 
 .dark .border-red {
-  border: none !important;
+  border-color: rgba(188, 161, 161, 0.9) !important;
 }
 
 .dark .text-status-green {
-  color: #cc5200 !important;
+  color: rgba(129, 199, 132, 0.9) !important;
 }
 
 /* Empty state styling */
 .dark .empty-state {
-  background-color: #000000 !important;
-  border: none !important;
+  background-color: #1f2937 !important;
+  border: 1px solid #2f3b4c;
   border-radius: 12px;
   text-align: center;
   padding: 3rem 2rem;
 }
 
 .dark .empty-state p {
-  color: #cc5200 !important;
+  color: #9ca3af !important;
 }
 
-/* Login page enhancements for X^∞ theme */
+/* Login page enhancements for dark theme */
 .dark .login-container {
-  background-color: #000000 !important;
+  background-color: #1f2a37 !important;
 }
 
 .dark .login-card {
-  background-color: #000000 !important;
-  border: none !important;
+  background-color: #1f2937 !important;
+  border: 1px solid #2f3b4c;
   box-shadow:
-    0 8px 25px rgba(255, 102, 0, 0.2),
-    0 4px 12px rgba(255, 102, 0, 0.15);
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
 }

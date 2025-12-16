@@ -38,7 +38,6 @@ export class DataService {
       result.users = newSettings.users;
       result.systemConfig = newSettings.systemConfig;
       result.groups = newSettings.groups;
-      result.stratas = newSettings.stratas;
       result.oauthClients = newSettings.oauthClients;
       result.oauthTokens = newSettings.oauthTokens;
       return result;

@@ -12,13 +12,13 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   const { t } = useTranslation();
 
   return (
-    <header className="bg-[#000000] dark:bg-[#000000] shadow-sm z-10 border-b border-[#ff6600]/30">
+    <header className="bg-white dark:bg-gray-800 shadow-sm z-10">
       <div className="flex justify-between items-center px-3 py-3">
         <div className="flex items-center">
           {/* 侧边栏切换按钮 */}
           <button
             onClick={onToggleSidebar}
-            className="p-2 rounded-md text-[#ff6600] dark:text-[#ff6600] hover:text-[#ff6600] dark:hover:text-[#ff6600] hover:bg-[#333333] dark:hover:bg-[#333333] focus:outline-none"
+            className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
             aria-label={t('app.toggleSidebar')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,12 +27,12 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
           </button>
 
           {/* 应用标题 */}
-          <h1 className="ml-4 text-xl font-bold text-[#ff6600] dark:text-[#ff6600]">{t('app.title')}</h1>
+          <h1 className="ml-4 text-xl font-bold text-gray-900 dark:text-white">{t('app.title')}</h1>
         </div>
 
         {/* Theme Switch and Language Switcher and Version */}
         <div className="flex items-center space-x-1">
-          <span className="text-sm text-[#ff6600]/70 dark:text-[#ff6600]/70 mr-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">
             {import.meta.env.PACKAGE_VERSION === 'dev'
               ? import.meta.env.PACKAGE_VERSION
               : `v${import.meta.env.PACKAGE_VERSION}`}
@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
             href="https://github.com/samanhappy/mcphub"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-md text-[#ff6600] dark:text-[#ff6600] hover:text-[#ff6600] dark:hover:text-[#ff6600] hover:bg-[#333333] dark:hover:bg-[#333333]"
+            className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="GitHub Repository"
           >
             <GitHubIcon className="h-5 w-5" />

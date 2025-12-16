@@ -10,7 +10,6 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/Dashboard';
 import ServersPage from './pages/ServersPage';
 import GroupsPage from './pages/GroupsPage';
-import StratasPage from './pages/StratasPage';
 import UsersPage from './pages/UsersPage';
 import SettingsPage from './pages/SettingsPage';
 import MarketPage from './pages/MarketPage';
@@ -41,7 +40,6 @@ function App() {
                   <Route path="/" element={<DashboardPage />} />
                   <Route path="/servers" element={<ServersPage />} />
                   <Route path="/groups" element={<GroupsPage />} />
-                  <Route path="/stratas" element={<StratasPage />} />
                   <Route path="/users" element={<UsersPage />} />
                   <Route path="/market" element={<MarketPage />} />
                   <Route path="/market/:serverName" element={<MarketPage />} />

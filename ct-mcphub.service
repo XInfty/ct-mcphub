@@ -5,12 +5,11 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/data/srv/ct-mcphub
-ExecStart=/home/auctor/.nvm/versions/node/v25.2.1/bin/node dist/index.js
+ExecStart=/home/auctor/.nvm/versions/node/v24.11.0/bin/node dist/index.js
 Restart=always
 RestartSec=10
 User=auctor
 Group=auctor
-Environment=PORT=13131
 Environment=NODE_ENV=production
 Environment=BASE_URL=http://xinfty-srv.sphinx-alnitak.ts.net:13131
 
