@@ -1,38 +1,292 @@
 {
   "mcpServers": {
-    "amap": {
+    "testsprite": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
       "command": "npx",
       "args": [
         "-y",
-        "@amap/amap-maps-mcp-server"
+        "@testsprite/testsprite-mcp@latest"
       ],
       "env": {
-        "AMAP_MAPS_API_KEY": "your-api-key"
+        "API_KEY": "sk-user-0N2eE4zvS8baZ7pHXkPUk1Vxp9vRAY3hfsPOeQ-UXNh-OAeJKSVraJzyOkVcMrIRH5qz8dfrTjP0omoQH0RVkZqF8hmOnpRfIOfjbhIPRzygcwW7yIGKr0mbDFdSefQqIzU"
       }
     },
-    "playwright": {
+    "infisical": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
       "command": "npx",
       "args": [
-        "@playwright/mcp@latest",
-        "--headless"
+        "-y",
+        "@infisical/mcp@latest"
+      ],
+      "env": {
+        "INFISICAL_UNIVERSAL_AUTH_CLIENT_ID": "c6be56a6-b405-4019-a934-252ddb06fcaf",
+        "INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET": "35bc6fbffb67bb9b5be8af987e4d51e1203ce90292b8358033e7adf011a0b61d"
+      },
+      "tools": {
+        "infisical-list-projects": {
+          "enabled": true,
+          "description": "List all projects in Infisical that the machine identity has access to."
+        }
+      }
+    },
+    "firecrawl": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "command": "firecrawl-mcp",
+      "args": [],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-083923e1ab1e495cbad6901941297722"
+      },
+      "url": "https://mcp.firecrawl.dev/fc-7174d261e43143b1875d25c8cd4f0883/v2/mcp",
+      "headers": {
+        "FIRECRAWL_API_KEY": "fc-7174d261e43143b1875d25c8cd4f0883"
+      }
+    },
+    "docfork": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx ",
+      "args": [
+        "-y",
+        "docfork"
       ]
     },
-    "fetch": {
+    "context7-mcp": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "url": "https://mcprouter.to/context7",
+      "headers": {
+        "Authorization": "Bearer sk-13XoJlib69fGe7GoMpkIlRgZkjBVF7yeDalCke4qOvXAX",
+        "HTTP-Referer": "https://www.mcphubx.com",
+        "X-Title": "MCPHub"
+      }
+    },
+    "hf-mcp": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "url": "https://mcprouter.to/hf-mcp",
+      "headers": {
+        "Authorization": "Bearer sk-13XoJlib69fGe7GoMpkIlRgZkjBVF7yeDalCke4qOvXAX",
+        "HTTP-Referer": "https://www.mcphubx.com",
+        "X-Title": "MCPHub"
+      }
+    },
+    "time": {
+      "enabled": true,
+      "owner": "admin",
       "command": "uvx",
       "args": [
-        "mcp-server-fetch"
-      ]
+        "mcp-server-time",
+        "--local-timezone=UTC"
+      ],
+      "env": {}
     },
-    "slack": {
+    "scholarly": {
+      "enabled": true,
+      "owner": "admin",
+      "command": "uvx",
+      "args": [
+        "mcp-scholarly"
+      ],
+      "env": {},
+      "type": "stdio"
+    },
+    "eslint": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-slack"
+        "@eslint/mcp@latest"
+      ]
+    },
+    "zenodo": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "/data/srv/ct-zenodo-mcp/zenodo-mcp-server/zenodo_mcp.py"
       ],
       "env": {
-        "SLACK_BOT_TOKEN": "your-bot-token",
-        "SLACK_TEAM_ID": "your-team-id"
+        "ZENODO_SANDBOX_TOKEN": "vsilQPNZan7s0qwzIAFwS8QEjAhLs7CRMmaApljMwPAZAKqhImFLbiPvDIk7",
+        "ZENODO_TOKEN": "Lfm63AHFBM0UHV5FfcwrU2axrWE7thiHvEP3zzLH7FmzgvVIRHYGYRWthcgs"
+      },
+      "options": {
+        "timeout": 300000,
+        "resetTimeoutOnProgress": true
       }
+    },
+    "mongodb-lens": {
+      "enabled": true,
+      "owner": "admin",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-lens@latest",
+        "mongodb://xinfty-db.sphinx-alnitak.ts.net:27017"
+      ],
+      "env": {
+        "CONFIG_LOG_LEVEL": "${CONFIG_LOG_LEVEL}"
+      },
+      "type": "stdio"
+    },
+    "n8n-admin": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@leonardsellem/n8n-mcp-server@latest"
+      ],
+      "env": {
+        "N8N_API_URL": "http://localhost:5678/api/v1",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwOTMwODdjNC1iNmMyLTRjY2ItYjEyOC0xNTIyZjQ2MTk1MTYiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY1ODY1NjU1fQ.XxwQOgyii2W98wO1okpmSurZpIE151sjswlJJvmviZ0"
+      }
+    },
+    "n8n": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "url": "http://127.0.0.1:5678/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwOTMwODdjNC1iNmMyLTRjY2ItYjEyOC0xNTIyZjQ2MTk1MTYiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6IjdhNDE1YjQwLWNjZGUtNGZmNC1hNzEwLTQxNDBkNWUxYzY2YyIsImlhdCI6MTc2NTg2NTU3NH0.vjOR9CnRchKkCGRyIk0Ofsalj7iCPV5tFQuqWQbBY_E"
+      },
+      "options": {
+        "timeout": 300000,
+        "resetTimeoutOnProgress": true
+      },
+      "oauth": {
+        "clientId": "f3dd9aa1-cc42-412f-ab47-ad381746d5f0",
+        "scopes": [
+          "openid"
+        ]
+      }
+    },
+    "github-Ptah": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "streamable-http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "options": {
+        "timeout": 300000,
+        "resetTimeoutOnProgress": true
+      },
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_COPILOT_TOKEN}"
+      }
+    },
+    "scientific_computation": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@Aman-Amith-Shastry/scientific_computation_mcp",
+        "--key",
+        "95f55efa-cd82-4895-ad6f-dede479cb8a9"
+      ],
+      "options": {
+        "timeout": 300000,
+        "resetTimeoutOnProgress": true
+      }
+    },
+    "strata-strata_test": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "strata",
+      "args": [
+        "--config-path",
+        "/data/srv/ct-mcphub/data/stratas/1653a57a-4347-4f6a-be30-95de970eb2fe.json"
+      ],
+      "env": {
+        "PATH": "/home/auctor/.local/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "_managedBy": "strata:1653a57a-4347-4f6a-be30-95de970eb2fe"
+    },
+    "todoist": {
+      "enabled": true,
+      "owner": "admin",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@abhiz123/todoist-mcp-server"
+      ],
+      "env": {
+        "TODOIST_API_TOKEN": "dd716fb0c731cb4a3107068360f1b0dadea61ebc"
+      }
+    },
+    "substack": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "/data/srv/mcp-writer-substack/run_writer_tool.sh",
+      "args": []
+    },
+    "fs_ops": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "/home/auctor/go/bin/mcp-filesystem-server",
+      "args": [
+        "/bin",
+        "/cache",
+        "/dev",
+        "/home",
+        "/lib32",
+        "/mnt",
+        "/proc",
+        "/run",
+        "/srv",
+        "/tmp",
+        "/usr",
+        "/data",
+        "/etc",
+        "/lib",
+        "/lib64",
+        "/media",
+        "/opt",
+        "/root",
+        "/sbin",
+        "/sys",
+        "/tmp-data",
+        "/var"
+      ],
+      "options": {
+        "timeout": 300000,
+        "resetTimeoutOnProgress": true
+      }
+    },
+    "chrome-dev-tools": {
+      "enabled": true,
+      "owner": "admin",
+      "type": "stdio",
+      "command": "/usr/bin/xvfb-run",
+      "args": [
+        "-a",
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--",
+        "--headless",
+        "--chromeArg=--no-sandbox",
+        "--chromeArg=--disable-setuid-sandbox",
+        "--chromeArg=--disable-gpu"
+      ]
     }
   },
   "users": [
@@ -40,6 +294,266 @@
       "username": "admin",
       "password": "$2b$10$Vt7krIvjNgyN67LXqly0uOcTpN0LI55cYRbcKC71pUDAP0nJ7RPa.",
       "isAdmin": true
+    }
+  ],
+  "systemConfig": {
+    "routing": {
+      "enableGlobalRoute": true,
+      "enableGroupNameRoute": true,
+      "enableBearerAuth": false,
+      "bearerAuthKey": "",
+      "skipAuth": true
+    },
+    "enableSessionRebuild": true,
+    "install": {
+      "pythonIndexUrl": "",
+      "npmRegistry": "",
+      "baseUrl": "http://xinfty-srv.sphinx-alnitak.ts.net:13131"
+    },
+    "smartRouting": {
+      "enabled": true,
+      "dbUrl": "postgresql://neondb_owner:npg_TojVtG5Ky9BL@ep-damp-sea-ab76zkbp-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+      "openaiApiBaseUrl": "https://openrouter.ai/v1/",
+      "openaiApiKey": "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",
+      "openaiApiEmbeddingModel": "qwen/qwen3-embedding-8b"
+    },
+    "mcpRouter": {
+      "apiKey": "sk-13XoJlib69fGe7GoMpkIlRgZkjBVF7yeDalCke4qOvXAX",
+      "referer": "https://www.mcphubx.com",
+      "title": "MCPHub",
+      "baseUrl": "https://api.mcprouter.to/v1"
+    },
+    "oauthServer": {
+      "enabled": true,
+      "accessTokenLifetime": 3600,
+      "refreshTokenLifetime": 1209600,
+      "authorizationCodeLifetime": 300,
+      "requireClientSecret": false,
+      "allowedScopes": [
+        "read",
+        "write"
+      ],
+      "requireState": false,
+      "dynamicRegistration": {
+        "enabled": true,
+        "allowedGrantTypes": [
+          "authorization_code",
+          "refresh_token"
+        ],
+        "requiresAuthentication": false
+      }
+    }
+  },
+  "groups": [
+    {
+      "id": "afd97b83-c243-473c-b18c-76cacc942bd5",
+      "name": "ct-research",
+      "description": "",
+      "servers": [
+        {
+          "name": "scholarly",
+          "tools": "all"
+        },
+        {
+          "name": "hf-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "firecrawl",
+          "tools": "all"
+        },
+        {
+          "name": "scientific_computation",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    },
+    {
+      "id": "cf97cf83-29e9-49f5-8394-a58d4324586d",
+      "name": "ct-publish",
+      "description": "",
+      "servers": [
+        {
+          "name": "zenodo",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    },
+    {
+      "id": "d0ce6170-31b7-4c5d-a8fb-d8429da60b87",
+      "name": "ct-tools",
+      "description": "",
+      "servers": [
+        {
+          "name": "mongodb-lens",
+          "tools": "all"
+        },
+        {
+          "name": "infisical",
+          "tools": "all"
+        },
+        {
+          "name": "n8n-admin",
+          "tools": "all"
+        },
+        {
+          "name": "n8n",
+          "tools": "all"
+        },
+        {
+          "name": "github-Ptah",
+          "tools": "all"
+        },
+        {
+          "name": "todoist",
+          "tools": "all"
+        },
+        {
+          "name": "fs_ops",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    },
+    {
+      "id": "5ad11df9-d301-486b-afe9-7caacd46d606",
+      "name": "coding_agents",
+      "description": "",
+      "servers": [
+        {
+          "name": "infisical",
+          "tools": "all"
+        },
+        {
+          "name": "firecrawl",
+          "tools": "all"
+        },
+        {
+          "name": "context7-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "hf-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "eslint",
+          "tools": "all"
+        },
+        {
+          "name": "github-Ptah",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    },
+    {
+      "id": "138bc222-3971-46b8-958b-6ae413424593",
+      "name": "ct_dev-tools",
+      "description": "",
+      "servers": [
+        {
+          "name": "chrome-dev-tools",
+          "tools": "all"
+        },
+        {
+          "name": "testsprite",
+          "tools": "all"
+        },
+        {
+          "name": "context7-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "docfork",
+          "tools": "all"
+        },
+        {
+          "name": "hf-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "eslint",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
+    }
+  ],
+  "stratas": [
+    {
+      "id": "1653a57a-4347-4f6a-be30-95de970eb2fe",
+      "name": "strata_test",
+      "description": "Test der Strata Funktionalität",
+      "servers": [
+        {
+          "name": "testsprite",
+          "tools": "all"
+        },
+        {
+          "name": "infisical",
+          "tools": "all"
+        },
+        {
+          "name": "firecrawl",
+          "tools": "all"
+        },
+        {
+          "name": "docfork",
+          "tools": "all"
+        },
+        {
+          "name": "context7-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "hf-mcp",
+          "tools": "all"
+        },
+        {
+          "name": "time",
+          "tools": "all"
+        },
+        {
+          "name": "scholarly",
+          "tools": "all"
+        },
+        {
+          "name": "eslint",
+          "tools": "all"
+        },
+        {
+          "name": "zenodo",
+          "tools": "all"
+        },
+        {
+          "name": "mongodb-lens",
+          "tools": "all"
+        },
+        {
+          "name": "n8n-admin",
+          "tools": "all"
+        },
+        {
+          "name": "n8n",
+          "tools": "all"
+        },
+        {
+          "name": "mailcow",
+          "tools": "all"
+        },
+        {
+          "name": "github-Ptah",
+          "tools": "all"
+        },
+        {
+          "name": "scientific_computation",
+          "tools": "all"
+        }
+      ],
+      "owner": "admin"
     }
   ]
 }

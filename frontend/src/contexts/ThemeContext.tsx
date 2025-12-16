@@ -47,7 +47,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (themeToApply === 'dark') {
         console.log('Applying dark mode to HTML root element'); // 添加日志
         root.classList.add('dark');
-        document.body.style.backgroundColor = '#111827'; // Force a dark background to ensure visible effect
+        document.body.style.backgroundColor = '#000000'; // X^∞ Theme: Pure black background
       } else {
         console.log('Removing dark mode from HTML root element'); // 添加日志
         root.classList.remove('dark');

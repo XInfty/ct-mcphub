@@ -13,14 +13,14 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex flex-col h-screen bg-[#000000] dark:bg-[#000000]">
       {/* 顶部导航 */}
       <Header onToggleSidebar={toggleSidebar} />
-      
+
       <div className="flex flex-1 overflow-hidden">
         {/* 侧边导航 */}
         <Sidebar collapsed={sidebarCollapsed} />
-        
+
         {/* 主内容区域 */}
         <Content>
           <Outlet />

@@ -253,6 +253,7 @@
     "dashboard": "Dashboard",
     "servers": "Servers",
     "groups": "Groups",
+    "stratas": "Stratas",
     "users": "Users",
     "settings": "Settings",
     "changePassword": "Change Password",
@@ -274,6 +275,9 @@
     },
     "groups": {
       "title": "Group Management"
+    },
+    "stratas": {
+      "title": "Strata Management"
     },
     "users": {
       "title": "User Management"
@@ -341,6 +345,25 @@
     "selectAll": "Select All",
     "selectNone": "Select None",
     "configureTools": "Configure Tools"
+  },
+  "stratas": {
+    "add": "Add Strata",
+    "addNew": "Add New Strata",
+    "edit": "Edit Strata",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this strata?",
+    "deleteWarning": "Deleting strata '{{name}}' will remove it and all its server associations. This action cannot be undone.",
+    "name": "Strata Name",
+    "namePlaceholder": "Enter strata name",
+    "nameRequired": "Strata name is required",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter strata description (optional)",
+    "createError": "Failed to create strata",
+    "updateError": "Failed to update strata",
+    "deleteError": "Failed to delete strata",
+    "servers": "Servers",
+    "noStratas": "No stratas configured. Click 'Add Strata' to create one.",
+    "configureTools": "Configure Servers and Tools"
   },
   "market": {
     "title": "Local Installation",

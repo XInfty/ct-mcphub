@@ -27,6 +27,15 @@ export interface IGroupServerConfig {
   tools?: string[] | 'all'; // Array of specific tool names to include, or 'all' for all tools (default: 'all')
 }
 
+// Strata interface for Open-Strata MCP router integration
+export interface IStrata {
+  id: string; // Unique UUID for the strata
+  name: string; // Display name of the strata (will be used as strata-{name} server name)
+  description?: string; // Optional description of the strata
+  servers: IGroupServerConfig[]; // Array of server configurations that belong to this strata
+  owner?: string; // Owner of the strata, defaults to 'admin' user
+}
+
 // Market server types
 export interface MarketServerRepository {
   type: string;
@@ -247,6 +256,7 @@ export interface McpSettings {
     [key: string]: ServerConfig; // Key-value pairs of server names and their configurations
   };
   groups?: IGroup[]; // Array of server groups
+  stratas?: IStrata[]; // Array of Open-Strata router configurations
   systemConfig?: SystemConfig; // System-wide configuration settings
   userConfigs?: Record<string, UserConfig>; // User-specific configurations
   oauthClients?: IOAuthClient[]; // OAuth clients for MCPHub's authorization server
@@ -324,6 +334,7 @@ export interface ServerConfig {
     security?: OpenAPISecurityConfig; // Security configuration for API calls
     passthroughHeaders?: string[]; // Header names to pass through from tool call requests to upstream OpenAPI endpoints
   };
+  _managedBy?: string; // Internal marker for servers managed by MCPHub features (e.g., 'strata:uuid')
 }
 
 // OpenAPI Security Configuration
