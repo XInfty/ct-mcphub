@@ -918,11 +918,11 @@ export const handleListToolsRequest = async (_: any, extra: any) => {
   const group = getGroup(sessionId);
   console.log(`Handling ListToolsRequest for group: ${group}`);
 
-  // Special handling for $smart group to return Oracle-based tools
-  // Support both $smart and $smart/{group} patterns
-  if (group === '$smart' || group?.startsWith('$smart/')) {
-    // Extract target group if pattern is $smart/{group}
-    const targetGroup = group?.startsWith('$smart/') ? group.substring(7) : undefined;
+  // Special handling for smart group to return Oracle-based tools
+  // Support both smart and smart/{group} patterns
+  if (group === 'smart' || group?.startsWith('smart/')) {
+    // Extract target group if pattern is smart/{group}
+    const targetGroup = group?.startsWith('smart/') ? group.substring(6) : undefined;
 
     // Get info about available servers, filtered by target group if specified
     let availableServers = serverInfos.filter(
@@ -1134,7 +1134,7 @@ export const handleCallToolRequest = async (request: any, extra: any) => {
 
       // Get all available tools from connected servers
       const group = getGroup(sessionId);
-      const targetGroup = group?.startsWith('$smart/') ? group.substring(7) : undefined;
+      const targetGroup = group?.startsWith('smart/') ? group.substring(6) : undefined;
 
       let availableServers = serverInfos.filter(
         (server) => server.status === 'connected' && server.enabled !== false,
@@ -1231,10 +1231,10 @@ export const handleCallToolRequest = async (request: any, extra: any) => {
       const sessionId = extra.sessionId || '';
       const group = getGroup(sessionId);
       let servers: string[] | undefined = undefined; // No server filtering by default
-      
-      // If group is in format $smart/{group}, filter servers to that group
-      if (group?.startsWith('$smart/')) {
-        const targetGroup = group.substring(7);
+
+      // If group is in format smart/{group}, filter servers to that group
+      if (group?.startsWith('smart/')) {
+        const targetGroup = group.substring(6);
         const serversInGroup = getServersInGroup(targetGroup);
         if (serversInGroup !== undefined && serversInGroup !== null) {
           servers = serversInGroup;
@@ -1343,9 +1343,9 @@ export const handleCallToolRequest = async (request: any, extra: any) => {
 
       const { arguments: toolArgs = {} } = request.params.arguments || {};
 
-      // For $smart groups, check if tool is activated
+      // For smart groups, check if tool is activated
       const group = getGroup(sessionId);
-      if (group === '$smart' || group?.startsWith('$smart/')) {
+      if (group === 'smart' || group?.startsWith('smart/')) {
         const oracle = ToolOracle.getInstance();
         const isActivated = oracle.isToolActivated(sessionId, toolName);
 

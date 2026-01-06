@@ -28,7 +28,7 @@ Tool Oracle replaces the previous vector search-based smart routing with an LLM-
 
 ### 3. Dynamic Tool Delivery
 
-When using `$smart` group:
+When using `smart` group:
 - Initially: Only `activate_superpowers` and `call_tool` are available
 - After activation: Activated tools appear in the tool list
 - Use `tools/list` to see your activated tools
@@ -102,11 +102,11 @@ The Oracle will consider both goal and context for more accurate recommendations
 
 ### Group-Specific Discovery
 
-Use `$smart/{group}` to limit discovery to specific server groups:
+Use `smart/{group}` to limit discovery to specific server groups:
 
 ```javascript
 // Only discover tools from "production" group servers
-// Connect to group: $smart/production
+// Connect to group: smart/production
 
 {
   "tool": "activate_superpowers",
