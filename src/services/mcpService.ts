@@ -26,6 +26,7 @@ import { getDataService } from './services.js';
 import { getServerDao, ServerConfigWithName } from '../dao/index.js';
 import { initializeAllOAuthClients } from './oauthService.js';
 import { createOAuthProvider } from './mcpOAuthProvider.js';
+import { ToolOracle } from './toolOracle.js';
 
 const servers: { [sessionId: string]: Server } = {};
 
@@ -917,17 +918,17 @@ export const handleListToolsRequest = async (_: any, extra: any) => {
   const group = getGroup(sessionId);
   console.log(`Handling ListToolsRequest for group: ${group}`);
 
-  // Special handling for $smart group to return special tools
+  // Special handling for $smart group to return Oracle-based tools
   // Support both $smart and $smart/{group} patterns
   if (group === '$smart' || group?.startsWith('$smart/')) {
     // Extract target group if pattern is $smart/{group}
     const targetGroup = group?.startsWith('$smart/') ? group.substring(7) : undefined;
-    
+
     // Get info about available servers, filtered by target group if specified
     let availableServers = serverInfos.filter(
       (server) => server.status === 'connected' && server.enabled !== false,
     );
-    
+
     // If a target group is specified, filter servers to only those in the group
     if (targetGroup) {
       const serversInGroup = getServersInGroup(targetGroup);
@@ -937,68 +938,97 @@ export const handleListToolsRequest = async (_: any, extra: any) => {
         );
       }
     }
-    
+
     // Create simple server information with only server names
     const serversList = availableServers
       .map((server) => {
         return `${server.name}`;
       })
       .join(', ');
-    
+
     const scopeDescription = targetGroup
       ? `servers in the "${targetGroup}" group`
       : 'all available servers';
-    
-    return {
-      tools: [
-        {
-          name: 'search_tools',
-          description: `STEP 1 of 2: Use this tool FIRST to discover and search for relevant tools across ${scopeDescription}. This tool and call_tool work together as a two-step process: 1) search_tools to find what you need, 2) call_tool to execute it.
 
-For optimal results, use specific queries matching your exact needs. Call this tool multiple times with different queries for different parts of complex tasks. Example queries: "image generation tools", "code review tools", "data analysis", "translation capabilities", etc. Results are sorted by relevance using vector similarity.
+    // Get activated tools for this session
+    const oracle = ToolOracle.getInstance();
+    const activatedTools = oracle.getActivatedTools(sessionId);
 
-After finding relevant tools, you MUST use the call_tool to actually execute them. The search_tools only finds tools - it doesn't execute them.
+    // Build base tools list (always available)
+    const baseTools = [
+      {
+        name: 'activate_superpowers',
+        description: `STEP 1: Discover and activate relevant tools based on your goal. This Oracle analyzes your objective and recommends the most relevant tools from ${scopeDescription}.
+
+Workflow:
+1. Call activate_superpowers(goal="your objective") → Get AI-powered tool recommendations
+2. Call activate_superpowers(action="activate", selection_id="...", comment="...") → Activate recommended tools
+3. Use the activated tools via call_tool
+
+The Oracle uses LLM analysis for intelligent tool matching - much more powerful than keyword search. It understands context and recommends ALL potentially relevant tools.
 
 Available servers: ${serversList}`,
-          inputSchema: {
-            type: 'object',
-            properties: {
-              query: {
-                type: 'string',
-                description:
-                  'The search query to find relevant tools. Be specific and descriptive about the task you want to accomplish.',
-              },
-              limit: {
-                type: 'integer',
-                description:
-                  'Maximum number of results to return. Use higher values (20-30) for broad searches and lower values (5-10) for specific searches.',
-                default: 10,
-              },
+        inputSchema: {
+          type: 'object',
+          properties: {
+            goal: {
+              type: 'string',
+              description: 'What you want to accomplish (required for discover action)',
             },
-            required: ['query'],
+            context: {
+              type: 'string',
+              description: 'Additional context to help find better tool matches (optional)',
+            },
+            action: {
+              type: 'string',
+              enum: ['discover', 'activate'],
+              description: 'Action to perform: "discover" (default) to get recommendations, "activate" to enable tools',
+              default: 'discover',
+            },
+            selection_id: {
+              type: 'string',
+              description: 'Selection ID from previous discover call (required for activate action)',
+            },
+            comment: {
+              type: 'string',
+              description: 'Your comment or feedback (optional for activate)',
+            },
           },
         },
-        {
-          name: 'call_tool',
-          description:
-            "STEP 2 of 2: Use this tool AFTER search_tools to actually execute/invoke any tool you found. This is the execution step - search_tools finds tools, call_tool runs them.\n\nWorkflow: search_tools → examine results → call_tool with the chosen tool name and required arguments.\n\nIMPORTANT: Always check the tool's inputSchema from search_tools results before invoking to ensure you provide the correct arguments. The search results will show you exactly what parameters each tool expects.",
-          inputSchema: {
-            type: 'object',
-            properties: {
-              toolName: {
-                type: 'string',
-                description: 'The exact name of the tool to invoke (from search_tools results)',
-              },
-              arguments: {
-                type: 'object',
-                description:
-                  'The arguments to pass to the tool based on its inputSchema (optional if tool requires no arguments)',
-              },
+      },
+      {
+        name: 'call_tool',
+        description:
+          "STEP 2: Execute any activated tool. After activating tools via activate_superpowers, use this to actually invoke them.\n\nWorkflow: activate_superpowers → examine recommendations → activate → call_tool with the chosen tool name and arguments.\n\nIMPORTANT: You can only call tools that have been activated for your session. Check the activated tools list from activate_superpowers response.",
+        inputSchema: {
+          type: 'object',
+          properties: {
+            toolName: {
+              type: 'string',
+              description: 'The exact name of the activated tool to invoke',
             },
-            required: ['toolName'],
+            arguments: {
+              type: 'object',
+              description:
+                'The arguments to pass to the tool based on its inputSchema (optional if tool requires no arguments)',
+            },
           },
+          required: ['toolName'],
         },
-      ],
+      },
+    ];
+
+    // Add activated tools to the list
+    const activatedToolSchemas = activatedTools.map((t) => ({
+      name: t.tool,
+      description: t.schema?.description || '',
+      inputSchema: t.schema?.inputSchema || {},
+    }));
+
+    console.log(`[Smart Group] Returning ${baseTools.length} base tools + ${activatedToolSchemas.length} activated tools for session ${sessionId}`);
+
+    return {
+      tools: [...baseTools, ...activatedToolSchemas],
     };
   }
 
@@ -1052,7 +1082,127 @@ Available servers: ${serversList}`,
 export const handleCallToolRequest = async (request: any, extra: any) => {
   console.log(`Handling CallToolRequest for tool: ${JSON.stringify(request.params)}`);
   try {
-    // Special handling for agent group tools
+    const sessionId = extra.sessionId || '';
+
+    // Special handling for activate_superpowers
+    if (request.params.name === 'activate_superpowers') {
+      const { goal, context = '', action = 'discover', selection_id, comment = '' } =
+        request.params.arguments || {};
+
+      const oracle = ToolOracle.getInstance();
+
+      // Handle activate action
+      if (action === 'activate') {
+        if (!selection_id) {
+          throw new Error('selection_id is required for activate action');
+        }
+
+        try {
+          const activatedTools = oracle.activate(selection_id, comment);
+
+          // Format response
+          const response = {
+            status: 'success',
+            action: 'activate',
+            selection_id,
+            comment,
+            activated_tools: activatedTools.map((t) => ({
+              name: t.tool,
+              reason: t.reason,
+              description: t.schema?.description,
+            })),
+            message: `Successfully activated ${activatedTools.length} tool(s). These tools are now available via call_tool. Use tools/list to see the updated tool list including your activated tools.`,
+          };
+
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(response, null, 2),
+              },
+            ],
+          };
+        } catch (error: any) {
+          throw new Error(`Activation failed: ${error.message}`);
+        }
+      }
+
+      // Handle discover action (default)
+      if (!goal) {
+        throw new Error('goal is required for discover action');
+      }
+
+      // Get all available tools from connected servers
+      const group = getGroup(sessionId);
+      const targetGroup = group?.startsWith('$smart/') ? group.substring(7) : undefined;
+
+      let availableServers = serverInfos.filter(
+        (server) => server.status === 'connected' && server.enabled !== false,
+      );
+
+      if (targetGroup) {
+        const serversInGroup = getServersInGroup(targetGroup);
+        if (serversInGroup && serversInGroup.length > 0) {
+          availableServers = availableServers.filter((server) =>
+            serversInGroup.includes(server.name),
+          );
+        }
+      }
+
+      // Collect all tools from available servers
+      const allTools: Tool[] = [];
+      for (const serverInfo of availableServers) {
+        if (serverInfo.tools && serverInfo.tools.length > 0) {
+          const enabledTools = await filterToolsByConfig(serverInfo.name, serverInfo.tools);
+          allTools.push(...enabledTools);
+        }
+      }
+
+      if (allTools.length === 0) {
+        throw new Error('No tools available for discovery');
+      }
+
+      console.log(`[Oracle] Discovering tools from ${allTools.length} available tools`);
+
+      try {
+        const result = await oracle.discover(sessionId, goal, allTools, context);
+
+        // Format response
+        const response = {
+          status: 'success',
+          action: 'discover',
+          selection_id: result.selectionId,
+          goal,
+          recommendations: result.recommendations.map((r, index) => ({
+            rank: index + 1,
+            tool: r.tool,
+            reason: r.reason,
+            description: r.schema?.description,
+            parameters: r.schema?.inputSchema?.properties
+              ? Object.keys(r.schema.inputSchema.properties).slice(0, 5)
+              : [],
+          })),
+          total: result.recommendations.length,
+          next_steps: {
+            activate: `Call activate_superpowers with action="activate", selection_id="${result.selectionId}", and comment="..." to enable these tools`,
+            usage: 'After activation, use call_tool to execute any of these tools',
+          },
+        };
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response, null, 2),
+            },
+          ],
+        };
+      } catch (error: any) {
+        throw new Error(`Oracle discovery failed: ${error.message}`);
+      }
+    }
+
+    // Special handling for search_tools (legacy support - redirect to activate_superpowers)
     if (request.params.name === 'search_tools') {
       const { query, limit = 10 } = request.params.arguments || {};
 
@@ -1192,6 +1342,22 @@ export const handleCallToolRequest = async (request: any, extra: any) => {
       }
 
       const { arguments: toolArgs = {} } = request.params.arguments || {};
+
+      // For $smart groups, check if tool is activated
+      const group = getGroup(sessionId);
+      if (group === '$smart' || group?.startsWith('$smart/')) {
+        const oracle = ToolOracle.getInstance();
+        const isActivated = oracle.isToolActivated(sessionId, toolName);
+
+        if (!isActivated) {
+          throw new Error(
+            `Tool '${toolName}' is not activated for your session. Use activate_superpowers to discover and activate tools first.`
+          );
+        }
+
+        console.log(`[Smart Group] Tool '${toolName}' is activated for session ${sessionId}`);
+      }
+
       let targetServerInfo: ServerInfo | undefined;
       if (extra && extra.server) {
         targetServerInfo = getServerByName(extra.server);
