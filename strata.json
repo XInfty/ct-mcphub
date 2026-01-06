@@ -1,0 +1,11 @@
+{
+  "mcp": {
+    "servers": {
+      "ct-tools": {
+        "type": "http",
+        "url": "http://bootstrap.sphinx-alnitak.ts.net:13131/mcp/d0ce6170-31b7-4c5d-a8fb-d8429da60b87",
+        "enabled": true
+      }
+    }
+  }
+}
