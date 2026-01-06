@@ -308,11 +308,7 @@ const callToolWithReconnect = async (
               version: '1.0.0',
             },
             {
-              capabilities: {
-                prompts: {},
-                resources: {},
-                tools: {},
-              },
+              capabilities: {},
             },
           );
 
@@ -505,11 +501,7 @@ export const initializeClientsFromSettings = async (
           version: '1.0.0',
         },
         {
-          capabilities: {
-            prompts: {},
-            resources: {},
-            tools: {},
-          },
+          capabilities: {},
         },
       );
 
@@ -828,7 +820,7 @@ export const copyServer = async (
       return { success: false, message: `Server name '${newName}' already exists` };
     }
 
-    const { name, ...config } = sourceServer;
+    const { name: _name, ...config } = sourceServer;
     await serverDao.create({ name: newName, ...config });
 
     return { success: true, message: 'Server copied successfully' };
