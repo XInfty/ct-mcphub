@@ -124,9 +124,9 @@ describe('vectorSearchService', () => {
       enabled: true,
       dbUrl: 'postgres://localhost/test',
       embeddingProvider: 'openai',
-      openaiApiEmbeddingModel: 'text-embedding-3-small',
-      openaiApiBaseUrl: 'https://api.openai.com/v1',
-      openaiApiKey: '',
+      embeddingModel: 'text-embedding-3-small',
+      llmProviderBaseUrl: 'https://api.openai.com/v1',
+      llmProviderApiKey: '',
       embeddingDimensions: undefined,
     });
     mockFindServerById.mockResolvedValue({
@@ -289,9 +289,9 @@ describe('vectorSearchService', () => {
       embeddingProvider: 'openai',
       embeddingEncodingFormat: 'float',
       embeddingDimensions: 2,
-      openaiApiEmbeddingModel: 'text-embedding-3-small',
-      openaiApiBaseUrl: 'https://api.example.com/v1',
-      openaiApiKey: 'sk-from-dashboard',
+      embeddingModel: 'text-embedding-3-small',
+      llmProviderBaseUrl: 'https://api.example.com/v1',
+      llmProviderApiKey: 'sk-from-dashboard',
     });
     mockEmbeddingCreate.mockResolvedValue({ data: [{ embedding: [3, 4] }] });
     mockVectorRepository.countByServerNameAndModel.mockResolvedValue(0);
@@ -349,9 +349,9 @@ describe('vectorSearchService', () => {
       embeddingProvider: 'openai',
       embeddingEncodingFormat: 'float',
       embeddingDimensions: 2560,
-      openaiApiEmbeddingModel: 'Qwen3-Embedding-4B',
-      openaiApiBaseUrl: 'https://embeddings.example.com/v1',
-      openaiApiKey: 'sk-from-dashboard',
+      embeddingModel: 'Qwen3-Embedding-4B',
+      llmProviderBaseUrl: 'https://embeddings.example.com/v1',
+      llmProviderApiKey: 'sk-from-dashboard',
     });
     mockEmbeddingCreate.mockResolvedValue({ data: [{ embedding: [1, 2, 3] }] });
     mockVectorRepository.countByServerNameAndModel.mockResolvedValue(0);
@@ -398,9 +398,9 @@ describe('vectorSearchService', () => {
       embeddingEncodingFormat: 'float',
       embeddingDimensions: 2560,
       embeddingDimensionsApiPassthrough: true,
-      openaiApiEmbeddingModel: 'Qwen3-Embedding-4B',
-      openaiApiBaseUrl: 'https://embeddings.example.com/v1',
-      openaiApiKey: 'sk-from-dashboard',
+      embeddingModel: 'Qwen3-Embedding-4B',
+      llmProviderBaseUrl: 'https://embeddings.example.com/v1',
+      llmProviderApiKey: 'sk-from-dashboard',
     });
     mockEmbeddingCreate.mockResolvedValue({ data: [{ embedding: [1, 2, 3] }] });
     mockVectorRepository.countByServerNameAndModel.mockResolvedValue(0);
@@ -444,7 +444,7 @@ describe('vectorSearchService', () => {
       dbUrl: 'postgres://localhost/test',
       embeddingProvider: 'azure_openai',
       embeddingDimensions: 768,
-      openaiApiKey: 'sk-for-truncation',
+      llmProviderApiKey: 'sk-for-truncation',
       azureOpenaiEndpoint: 'https://example.openai.azure.com',
       azureOpenaiApiKey: 'azure-key',
       azureOpenaiApiVersion: '2024-02-15-preview',
@@ -488,7 +488,7 @@ describe('vectorSearchService', () => {
       dbUrl: 'postgres://localhost/test',
       embeddingProvider: 'azure_openai',
       embeddingDimensions: 2560,
-      openaiApiKey: 'sk-for-truncation',
+      llmProviderApiKey: 'sk-for-truncation',
       azureOpenaiEndpoint: 'https://example.openai.azure.com',
       azureOpenaiApiKey: 'azure-key',
       azureOpenaiApiVersion: '2024-02-15-preview',

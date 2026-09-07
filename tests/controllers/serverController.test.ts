@@ -682,9 +682,9 @@ describe('serverController - updateSystemConfig', () => {
         enabled: false,
         dbUrl: 'postgres://localhost/test',
         embeddingProvider: 'openai',
-        openaiApiBaseUrl: 'https://api.openai.com/v1',
-        openaiApiKey: 'sk-test',
-        openaiApiEmbeddingModel: 'text-embedding-3-small',
+        llmProviderBaseUrl: 'https://api.openai.com/v1',
+        llmProviderApiKey: 'sk-test',
+        embeddingModel: 'text-embedding-3-small',
       },
     });
 
@@ -719,9 +719,9 @@ describe('serverController - updateSystemConfig', () => {
         enabled: false,
         dbUrl: 'postgres://localhost/test',
         embeddingProvider: 'openai',
-        openaiApiBaseUrl: 'https://api.openai.com/v1',
-        openaiApiKey: 'sk-test',
-        openaiApiEmbeddingModel: 'text-embedding-3-small',
+        llmProviderBaseUrl: 'https://api.openai.com/v1',
+        llmProviderApiKey: 'sk-test',
+        embeddingModel: 'text-embedding-3-small',
       },
     });
 
@@ -734,6 +734,52 @@ describe('serverController - updateSystemConfig', () => {
         }),
       }),
     );
+  });
+
+  it('normalizes legacy smart-routing request fields before persisting the update', async () => {
+    mockRequest.body = {
+      smartRouting: {
+        openaiApiKey: 'legacy-key',
+        openaiApiBaseUrl: 'https://legacy.example/v1',
+        openaiApiEmbeddingModel: 'legacy-model',
+        llmProviderApiKey: 'neutral-key',
+      },
+    };
+    mockSystemConfigDao.get.mockResolvedValue({
+      routing: {
+        enableGlobalRoute: true,
+        enableGroupNameRoute: true,
+        enableBearerAuth: true,
+        bearerAuthKey: '',
+        bearerAuthHeaderName: 'Authorization',
+        jsonBodyLimit: '1mb',
+        skipAuth: false,
+      },
+      smartRouting: {
+        enabled: false,
+        dbUrl: 'postgres://localhost/test',
+        embeddingProvider: 'openai',
+        llmProviderBaseUrl: 'https://api.openai.com/v1',
+        llmProviderApiKey: 'old-key',
+        embeddingModel: 'text-embedding-3-small',
+      },
+    });
+
+    await updateSystemConfig(mockRequest as Request, mockResponse as Response);
+
+    expect(mockSystemConfigDao.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        smartRouting: expect.objectContaining({
+          llmProviderApiKey: 'neutral-key',
+          llmProviderBaseUrl: 'https://legacy.example/v1',
+          embeddingModel: 'legacy-model',
+        }),
+      }),
+    );
+    const persistedSmartRouting = mockSystemConfigDao.update.mock.calls[0][0].smartRouting;
+    expect(persistedSmartRouting).not.toHaveProperty('openaiApiKey');
+    expect(persistedSmartRouting).not.toHaveProperty('openaiApiBaseUrl');
+    expect(persistedSmartRouting).not.toHaveProperty('openaiApiEmbeddingModel');
   });
 
   it('persists Better Auth settings via auth.betterAuth', async () => {
